@@ -1,18 +1,43 @@
+const tools = document.querySelector(".tools");
+
+const high = function(target){
+    target.style.background = "#eee";
+}
+const removeHigh = function(){
+    // [...tools.children].forEach((data) => {
+    //     console.log(data)
+    //     data.style.background = "none"
+    // });
+}
+tools.addEventListener("click", function({target}){
+    removeHigh();
+    if(target.parentNode.classList.contains("pencil")){
+        high(target);
+
+        return false;
+    }
+    if(target.parentNode.classList.contains("rectangle")){
+        high(target);
+
+        return false;
+    }
+    if(target.parentNode.classList.contains("circle")){
+        high(target);
+
+        return false;
+    }
+})
+
 let pos = {
     drawable: false,
     x: -1,
     y: -1
 };
-
-let canvas = document.getElementById("canvas");
+let canvas = document.querySelector(".canvas");
 let ctx = canvas.getContext("2d");
 
-canvas.addEventListener("mousedown", listener);
-canvas.addEventListener("mousemove", listener);
-canvas.addEventListener("mouseup", listener);
-canvas.addEventListener("mouseout", listener);
- 
-function listener(event){
+
+const listener = function(event){
     switch(event.type){
         case "mousedown":
             initDraw(event);
@@ -58,3 +83,8 @@ const getPosition = function(event){
     var y = event.pageY - canvas.offsetTop;
     return {X: x, Y: y};
 }
+
+canvas.addEventListener("mousedown", listener);
+canvas.addEventListener("mousemove", listener);
+canvas.addEventListener("mouseup", listener);
+canvas.addEventListener("mouseout", listener);
