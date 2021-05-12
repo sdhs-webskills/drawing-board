@@ -7,8 +7,22 @@ body{background: rgb(65, 65, 65);}
 
 .container{width: 100%; height: 100vh; align-items: center;}
 .tool{width: 200px; height: 850px; background: #fff; margin-right: 200px; border: 1px solid #000; border-top-right-radius: 50px; border-bottom-right-radius: 50px;}
-.tools{width: 120px; height: 60%; grid-template-columns: repeat(2, 1fr); margin: 20px; gap: 10px;}
+.tools{width: 120px; grid-template-columns: repeat(2, 1fr); margin: 20px; gap: 10px;}
 .tools>div{width: 70px; height: 70px; border-radius: 15px; justify-content: center; align-items: center;}
 .tools>div>img{width: 70px; height: 70px; padding: 5px; object-fit: cover; cursor: pointer; border-radius: 15px;}
+
+.tool .sub-tool{margin-top: 40px;}
+.tool .size{margin-left: 10px;}
+.tool .size input{width: 70px; height: 35px; margin: 5px; font-size: 18px;}
+
+.tool .color p{margin: 10px;}
+.tool .color .colors{width: 100%; justify-content: center;}
+.tool .color .colors>div{width: 50px; height: 50px; margin: 2px; border-radius: 10px;} 
+.tool .color .red{background: red;}
+.tool .color .green{background: green;}
+.tool .color .blue{background: blue;}
+
+.x, .y{width: 70px; margin: 5px 15px; font-size: 20px; border: none;}
+.resetBtn{display: block; width: 130px; height: 40px; margin: 40px auto; background: rgb(250, 250, 250); border: 1px solid #000; cursor: pointer;}
 
 .canvas{border: 1px solid #000; background: #fff;}

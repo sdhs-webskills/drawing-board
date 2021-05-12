@@ -12,17 +12,36 @@
         <div class="tool">
             <div class="tools grid">
                 <div class="pencil flex"><img src="./img/Pencil.png" alt=""></div>
-                <div class="flex"></div>
+                <div class="eraser flex"><img src="./img/Eraser.png" alt=""></div>
                 <div class="rectangle flex"><img src="./img/Rectangle.png" alt=""></div>
                 <div class="circle flex"><img src="./img/Circle.png" alt=""></div>
+                <!-- <div class="flex"></div>
                 <div class="flex"></div>
                 <div class="flex"></div>
                 <div class="flex"></div>
                 <div class="flex"></div>
                 <div class="flex"></div>
                 <div class="flex"></div>
-                <div class="flex"></div>
-                <div class="flex"></div>
+                <div class="flex"></div> -->
+            </div>
+            <div class="sub-tool">
+                <div class="size">
+                    <p>굵기</p>
+                    <input type="text">
+                </div>
+                <div class="color">
+                    <p>색상</p>
+                    <div class="colors flex">
+                        <div class="red"></div>
+                        <div class="green"></div>
+                        <div class="blue"></div>
+                    </div>
+                </div>
+                <input type="text" class="x" value="x: " readonly>
+                <input type="text" class="y" value="y: " readonly>
+                <br>
+                <button class="resetBtn">reset</button>
+
             </div>
         </div>
         <canvas class="canvas" width="1300" height="700"></canvas>
