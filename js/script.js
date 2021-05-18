@@ -28,7 +28,6 @@ const reset = function(){
     canvas.removeEventListener("mousedown", drawListener);
     canvas.removeEventListener("mousemove", drawListener);
     canvas.removeEventListener("mouseup", drawListener);
-    canvas.removeEventListener("mouseout", drawListener);
 }
 
 const drawListener = function(event){
@@ -42,7 +41,6 @@ const drawListener = function(event){
                 draw(event);
             break;
  
-        case "mouseout":
         case "mouseup":
             finishDraw();
             break;
@@ -86,7 +84,6 @@ tools.addEventListener("click", function({target}){
         canvas.addEventListener("mousedown", drawListener);
         canvas.addEventListener("mousemove", drawListener);
         canvas.addEventListener("mouseup", drawListener);
-        canvas.addEventListener("mouseout", drawListener);
         
         return false;
     }
@@ -113,10 +110,6 @@ tools.addEventListener("click", function({target}){
 canvas.addEventListener("mousemove", function(event){
     let x = event.pageX - canvas.offsetLeft;
     let y = event.pageY - canvas.offsetTop;
-    // pageX 마우스의 x축
-    // pageY 마우스의 y축
-    // offsetLeft 캔버스가 왼쪽벽에서 떨어져있는 길이?
-    // offsetTop 캔버스가 윗벽에서 떨어져있는 길이?
     xx.value = `x: ${x}`;
     yy.value = `y: ${y}`;
 })
