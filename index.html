@@ -27,21 +27,13 @@
             <div class="sub-tool">
                 <div class="size">
                     <p>굵기</p>
-                    <input type="text">
+                    <input type="range" value="1" max="20">
                 </div>
                 <div class="color">
                     <p>색상</p>
-                    <div class="colors flex">
-                        <div class="red"></div>
-                        <div class="green"></div>
-                        <div class="blue"></div>
-                    </div>
+                    <input type="color" class="color_btn">
                 </div>
-                <input type="text" class="x" value="x: " readonly>
-                <input type="text" class="y" value="y: " readonly>
                 <br>
-                <button class="resetBtn">reset</button>
-
             </div>
         </div>
         <canvas class="canvas" width="1300" height="700"></canvas>

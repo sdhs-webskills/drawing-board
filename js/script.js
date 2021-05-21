@@ -3,9 +3,7 @@ const ctx = canvas.getContext("2d");
 const tools = document.querySelector(".tools");
 const resetBtn = document.querySelector(".resetBtn");
 const size = document.querySelector(".size input");
-
-const xx = document.querySelector(".x");
-const yy = document.querySelector(".y");
+const colorBtn = document.querySelector(".sub-tool .color_btn")
 
 let pos = {
     drawable: false,
@@ -13,117 +11,97 @@ let pos = {
     y: -1
 };
 
-// 하이라이트
-const highlight = function(target){
-    target.parentNode.style.background = "#eee";
-}
+const reset = function () {
+    [...tools.children].forEach((data) => data.style.background = "#fff" );
+    ctx.fillStyle = "#000000";
+    ctx.strokeStyle = "#000000";
+    colorBtn.value = "#000000"
+    ctx.lineWidth = 1;
 
-const reset = function(){
-    // 하이라이트 해제
-    [...tools.children].forEach((data) => {
-        data.style.background = "#fff";
-    });
-
-    // 실행중인 canvas이벤트 중지
     canvas.removeEventListener("mousedown", drawListener);
     canvas.removeEventListener("mousemove", drawListener);
     canvas.removeEventListener("mouseup", drawListener);
+    canvas.removeEventListener("mouseout", drawListener);
 }
 
-const drawListener = function(event){
-    switch(event.type){
+const drawListener = function (e) {
+    switch (e.type) {
         case "mousedown":
-            initDraw(event);
+            initDraw(e);
             break;
- 
         case "mousemove":
-            if(pos.drawable)
-                draw(event);
+            if (pos.drawable)
+                draw(e);
             break;
- 
         case "mouseup":
+            finishDraw();
+            break;
+        case "mouseout":
             finishDraw();
             break;
     }
 }
 
-const initDraw = function(event){
+const initDraw = function (e) {
     ctx.beginPath();
     pos.drawable = true;
-    let coors = getPosition(event);
+    let coors = getPosition(e);
     pos.X = coors.X;
     pos.Y = coors.Y;
     ctx.moveTo(pos.X, pos.Y);
 }
- 
-const draw =function(event){
-    let coors = getPosition(event);
+
+const draw = function (e) {
+    let coors = getPosition(e);
     ctx.lineTo(coors.X, coors.Y);
     pos.X = coors.X;
     pos.Y = coors.Y;
     ctx.stroke();
 }
- 
-const finishDraw =function(){
+
+const finishDraw = function () {
     pos.drawable = false;
     pos.X = -1;
     pos.Y = -1;
 }
- 
-const getPosition = function(event){
-    let x = event.pageX - canvas.offsetLeft;
-    let y = event.pageY - canvas.offsetTop;
-    return {X: x, Y: y};
+
+const getPosition = function (e) {
+    return {
+        X: e.pageX - canvas.offsetLeft,
+        Y: e.pageY - canvas.offsetTop
+    };
 }
 
-tools.addEventListener("click", function({target}){
-    if(target.parentNode.classList.contains("pencil")){
-        reset();
-        highlight(target);
+tools.addEventListener("click", function ({ target }) {
+    reset();
+    target.parentNode.style.background = "#eee";
 
-        canvas.addEventListener("mousedown", drawListener);
-        canvas.addEventListener("mousemove", drawListener);
-        canvas.addEventListener("mouseup", drawListener);
-        
-        return false;
-    }
-    if(target.parentNode.classList.contains("eraser")){
-        reset();
-        highlight(target);
+    switch (target.parentNode.classList[0]) {
+        case "pencil":
+            canvas.addEventListener("mousedown", drawListener);
+            canvas.addEventListener("mousemove", drawListener);
+            canvas.addEventListener("mouseup", drawListener);
+            canvas.addEventListener("mouseout", drawListener);
+            break;
+        case "eraser":
 
-        return false;
-    }
-    if(target.parentNode.classList.contains("rectangle")){
-        reset();
-        highlight(target);
+            break;
+        case "rectangle":
 
-        return false;
-    }
-    if(target.parentNode.classList.contains("circle")){
-        reset();
-        highlight(target);
+            break;
+        case "circle":
 
-        return false;
-    }
+            break;
+    };
 });
 
-canvas.addEventListener("mousemove", function(event){
-    let x = event.pageX - canvas.offsetLeft;
-    let y = event.pageY - canvas.offsetTop;
-    xx.value = `x: ${x}`;
-    yy.value = `y: ${y}`;
+canvas.getContext("2d").clearRect(0, 0, canvas.width, canvas.height);
+
+colorBtn.addEventListener("change", function () {
+    ctx.fillStyle = colorBtn.value;
+    ctx.strokeStyle = colorBtn.value;
 })
 
-resetBtn.addEventListener("click", function(){
-    const context = canvas.getContext('2d');
-    context.clearRect(0, 0, canvas.width, canvas.height);
-    console.log(1)
-})
-
-size.addEventListener("keydown", function({keyCode}){
-    // size.value = size.value.replace(/[^0-9]/g, "");
-    if(keyCode === 13){
-        console.log(size.value)
-    }
-    // console.log(keyCode)
+size.addEventListener("change", () => {
+    ctx.lineWidth = size.value;
 })
