@@ -12,10 +12,11 @@ let pos = {
 };
 
 const reset = function () {
-    [...tools.children].forEach((data) => data.style.background = "#fff" );
+    [...tools.children].forEach((data) => data.style.background = "#fff");
     ctx.fillStyle = "#000000";
     ctx.strokeStyle = "#000000";
     colorBtn.value = "#000000"
+    size.value = 1;
     ctx.lineWidth = 1;
 
     canvas.removeEventListener("mousedown", drawListener);
@@ -72,6 +73,8 @@ const getPosition = function (e) {
     };
 }
 
+reset();
+
 tools.addEventListener("click", function ({ target }) {
     reset();
     target.parentNode.style.background = "#eee";
@@ -105,3 +108,19 @@ colorBtn.addEventListener("change", function () {
 size.addEventListener("change", () => {
     ctx.lineWidth = size.value;
 })
+
+canvas.addEventListener('contextmenu', function () {
+    let dataURL = canvas.toDataURL('image/png');
+
+    let a = document.createElement('a');
+    a.download = 'canvas_Img';
+    a.href = dataURL;
+    let c = confirm("이미지를 저장하시겠습니까?")
+
+    if(c){
+        a.click();
+    }
+    
+});
+
+

@@ -16,8 +16,9 @@ body{background: rgb(65, 65, 65);}
 .tool .size input{width: 70px; height: 35px; margin: 5px; font-size: 18px;}
 
 .tool .color p{margin: 10px;}
-.tool .color_btn{width: 100px; height: 30px;}
+.tool .color_btn{width: 150px; height: 30px; margin-left: 20px; border: none; outline: none;}
 
-.resetBtn{display: block; width: 130px; height: 40px; margin: 40px auto; background: rgb(250, 250, 250); border: 1px solid #000; cursor: pointer;}
+.sub-tool .size input{width: 120px; height: 40px; margin-left: 20px;}
+
 
 .canvas{border: 1px solid #000; background: #fff;}
