@@ -1,11 +1,17 @@
 const canvas = document.querySelector(".canvas");
 const ctx = canvas.getContext("2d");
+
 const tools = document.querySelector(".tools");
-const resetBtn = document.querySelector(".resetBtn");
 const size = document.querySelector(".size input");
 const colorBtn = document.querySelector(".sub-tool .color_btn");
+
 const savePopup = document.querySelector(".save");
-const closeBtn = document.querySelector("#close");
+const closeBtn = document.querySelector(".save #close");
+const photoBox = document.querySelector(".save .photo-box");
+const downloadBtn = document.querySelector(".save #download");
+const title = document.querySelector(".save .title")
+
+
 let pos = {
     drawable: false,
     x: -1,
@@ -25,6 +31,11 @@ const reset = function () {
     canvas.removeEventListener("mouseup", drawListener);
     canvas.removeEventListener("mouseout", drawListener);
 };
+
+const saveReset = function(){
+    photoBox.innerHTML = '';
+    title.value ='';
+}
 
 const drawListener = function (e) {
     switch (e.type) {
@@ -109,40 +120,30 @@ size.addEventListener("change", () => {
     ctx.lineWidth = size.value;
 });
 
-canvas.addEventListener('contextmenu', function () {
+canvas.addEventListener('contextmenu', function (e) {
+    e.preventDefault();
     savePopup.classList.toggle("none")
     
+    let dataURL = canvas.toDataURL('image/png');
     
-    // let dataURL = canvas.toDataURL('image/png');
+    let imgTag = document.createElement('img');
+    imgTag.setAttribute("src", dataURL);
     
-    // console.log(dataURL);
-    // let a = document.createElement('a');
-    // a.download = prompt("저장할 이름을 입력해주세요.");
-    // a.href = dataURL;
-    // a.click();
-    
-    
+    photoBox.append(imgTag);
 });
 
-closeBtn.addEventListener("click", function(){
-    savePopup.classList.toggle("none")
+downloadBtn.addEventListener("click", function(){
+    let dataURL = canvas.toDataURL('image/png');
+    
+    let aTag = document.createElement('a');
+    aTag.download = title.value;
+    aTag.href = dataURL;
+    aTag.click();
+
+    closeBtn.click();
 })
 
-/* <input type="file" id="imagefile" accept="image/*"/> 
-
-let imgFile = document.querySelector("#imagefile");
-
-imgFile.addEventListener("change", function(event){
-    let reader = new FileReader(); 
-    reader.readAsDataURL(event.target.files[0]); 
-    // 데이터 url을 base64로 인코딩함(한마디로 입력받은(target된) 이미지 url 주소 생성)
-    
-    reader.onload = function(event){ //load가 다 됐을 때 실행 
-        let img = document.createElement("img"); 
-        //img 돔 객체 생성
-        img.setAttribute("src", event.target.result); 
-        //만든 img 태그에 scr 값을 위에서 인코딩한 url로 바꿈
-        document.querySelector("div#image_container").appendChild(img);
-        // 미리만들어 놓은 image_container에다 img 태그 넣기
-    }; 
-}); */
+closeBtn.addEventListener("click", function(){
+    savePopup.classList.toggle("none");
+    saveReset();
+})
