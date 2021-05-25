@@ -4,6 +4,7 @@ ul, li{list-style: none;}
 body{background: rgb(65, 65, 65);}
 .flex{display: flex;}
 .grid{display: grid;}
+.none{display: none;}
 
 .container{width: 100%; height: 100vh; align-items: center;}
 .tool{width: 200px; height: 850px; background: #fff !important; margin-right: 200px; border: 1px solid #000; border-top-right-radius: 50px; border-bottom-right-radius: 50px;}
@@ -20,5 +21,16 @@ body{background: rgb(65, 65, 65);}
 
 .sub-tool .size input{width: 120px; height: 40px; margin-left: 20px;}
 
+.save{width: 100%; margin: 0 auto; height: 100vh; background: #fff; position: fixed; left: 0; right: 0; top: 0; bottom: 0; flex-direction: column;}
+
+.save .photo-box{width: 80%; height: 800px; background: rgb(245, 245, 245); margin: 40px auto;}
+
+.save .btns{width: 90%; height: 35px; justify-content: flex-end;}
+.save .btns>input{width: 70%; margin-right: 85px;}
+.save .btns>button{width: 100px; margin: 0 10px; border: none; border-radius: 5px;}
+
+.save .btns>button:hover{background: rgb(59, 59, 59); color: #fff; cursor: pointer; transition: .3s;}
 
 .canvas{border: 1px solid #000; background: #fff;}
+
+

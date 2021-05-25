@@ -3,8 +3,9 @@ const ctx = canvas.getContext("2d");
 const tools = document.querySelector(".tools");
 const resetBtn = document.querySelector(".resetBtn");
 const size = document.querySelector(".size input");
-const colorBtn = document.querySelector(".sub-tool .color_btn")
-
+const colorBtn = document.querySelector(".sub-tool .color_btn");
+const savePopup = document.querySelector(".save");
+const closeBtn = document.querySelector("#close");
 let pos = {
     drawable: false,
     x: -1,
@@ -23,7 +24,7 @@ const reset = function () {
     canvas.removeEventListener("mousemove", drawListener);
     canvas.removeEventListener("mouseup", drawListener);
     canvas.removeEventListener("mouseout", drawListener);
-}
+};
 
 const drawListener = function (e) {
     switch (e.type) {
@@ -41,7 +42,7 @@ const drawListener = function (e) {
             finishDraw();
             break;
     }
-}
+};
 
 const initDraw = function (e) {
     ctx.beginPath();
@@ -50,7 +51,7 @@ const initDraw = function (e) {
     pos.X = coors.X;
     pos.Y = coors.Y;
     ctx.moveTo(pos.X, pos.Y);
-}
+};
 
 const draw = function (e) {
     let coors = getPosition(e);
@@ -58,20 +59,20 @@ const draw = function (e) {
     pos.X = coors.X;
     pos.Y = coors.Y;
     ctx.stroke();
-}
+};
 
 const finishDraw = function () {
     pos.drawable = false;
     pos.X = -1;
     pos.Y = -1;
-}
+};
 
 const getPosition = function (e) {
     return {
         X: e.pageX - canvas.offsetLeft,
         Y: e.pageY - canvas.offsetTop
     };
-}
+};
 
 reset();
 
@@ -98,29 +99,50 @@ tools.addEventListener("click", function ({ target }) {
     };
 });
 
-canvas.getContext("2d").clearRect(0, 0, canvas.width, canvas.height);
 
 colorBtn.addEventListener("change", function () {
     ctx.fillStyle = colorBtn.value;
     ctx.strokeStyle = colorBtn.value;
-})
+});
 
 size.addEventListener("change", () => {
     ctx.lineWidth = size.value;
-})
+});
 
 canvas.addEventListener('contextmenu', function () {
-    let dataURL = canvas.toDataURL('image/png');
-
-    let a = document.createElement('a');
-    a.download = 'canvas_Img';
-    a.href = dataURL;
-    let c = confirm("이미지를 저장하시겠습니까?")
-
-    if(c){
-        a.click();
-    }
+    savePopup.classList.toggle("none")
+    
+    
+    // let dataURL = canvas.toDataURL('image/png');
+    
+    // console.log(dataURL);
+    // let a = document.createElement('a');
+    // a.download = prompt("저장할 이름을 입력해주세요.");
+    // a.href = dataURL;
+    // a.click();
+    
     
 });
 
+closeBtn.addEventListener("click", function(){
+    savePopup.classList.toggle("none")
+})
 
+/* <input type="file" id="imagefile" accept="image/*"/> 
+
+let imgFile = document.querySelector("#imagefile");
+
+imgFile.addEventListener("change", function(event){
+    let reader = new FileReader(); 
+    reader.readAsDataURL(event.target.files[0]); 
+    // 데이터 url을 base64로 인코딩함(한마디로 입력받은(target된) 이미지 url 주소 생성)
+    
+    reader.onload = function(event){ //load가 다 됐을 때 실행 
+        let img = document.createElement("img"); 
+        //img 돔 객체 생성
+        img.setAttribute("src", event.target.result); 
+        //만든 img 태그에 scr 값을 위에서 인코딩한 url로 바꿈
+        document.querySelector("div#image_container").appendChild(img);
+        // 미리만들어 놓은 image_container에다 img 태그 넣기
+    }; 
+}); */
