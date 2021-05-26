@@ -24,7 +24,7 @@ body{background: rgb(65, 65, 65);}
 .save{width: 100%; margin: 0 auto; height: 100vh; background: #fff; position: fixed; left: 0; right: 0; top: 0; bottom: 0; flex-direction: column;}
 
 .save .photo-box{width: 80%; height: 800px; background: rgb(245, 245, 245); margin: 40px auto; justify-content: center; align-items: center; border-radius: 20px;}
-.save .photo-box>img{width: 80%; height: 80%; object-fit: cover; border: 1px solid #000;}
+.save .photo-box>img{width: 80%; height: 85%; object-fit: cover; border: 1px solid #000;}
 
 .save .btns{width: 90%; height: 35px; justify-content: flex-end;}
 .save .btns>input{width: 70%; margin-right: 85px;}

@@ -11,25 +11,20 @@ const photoBox = document.querySelector(".save .photo-box");
 const downloadBtn = document.querySelector(".save #download");
 const title = document.querySelector(".save .title")
 
-
-let pos = {
-    drawable: false,
-    x: -1,
-    y: -1
-};
+let drawable = false;
 
 const reset = function () {
     [...tools.children].forEach((data) => data.style.background = "#fff");
     ctx.fillStyle = "#000000";
     ctx.strokeStyle = "#000000";
     colorBtn.value = "#000000"
-    size.value = 1;
+    size.value = 2;
     ctx.lineWidth = 1;
 
     canvas.removeEventListener("mousedown", drawListener);
     canvas.removeEventListener("mousemove", drawListener);
-    canvas.removeEventListener("mouseup", drawListener);
-    canvas.removeEventListener("mouseout", drawListener);
+    window.removeEventListener("mouseup", drawListener);
+    canvas.removeEventListener("mouseenter", drawListener);
 };
 
 const saveReset = function(){
@@ -43,46 +38,27 @@ const drawListener = function (e) {
             initDraw(e);
             break;
         case "mousemove":
-            if (pos.drawable)
+            if (drawable)
                 draw(e);
             break;
         case "mouseup":
-            finishDraw();
+            drawable = false;
             break;
-        case "mouseout":
-            finishDraw();
+        case "mouseleave":
+            ctx.beginPath();
             break;
     }
 };
 
 const initDraw = function (e) {
     ctx.beginPath();
-    pos.drawable = true;
-    let coors = getPosition(e);
-    pos.X = coors.X;
-    pos.Y = coors.Y;
-    ctx.moveTo(pos.X, pos.Y);
+    drawable = true;
+    ctx.moveTo(e.pageX - canvas.offsetLeft, e.pageY - canvas.offsetTop);
 };
 
 const draw = function (e) {
-    let coors = getPosition(e);
-    ctx.lineTo(coors.X, coors.Y);
-    pos.X = coors.X;
-    pos.Y = coors.Y;
+    ctx.lineTo(e.pageX - canvas.offsetLeft, e.pageY - canvas.offsetTop);
     ctx.stroke();
-};
-
-const finishDraw = function () {
-    pos.drawable = false;
-    pos.X = -1;
-    pos.Y = -1;
-};
-
-const getPosition = function (e) {
-    return {
-        X: e.pageX - canvas.offsetLeft,
-        Y: e.pageY - canvas.offsetTop
-    };
 };
 
 reset();
@@ -93,10 +69,10 @@ tools.addEventListener("click", function ({ target }) {
 
     switch (target.parentNode.classList[0]) {
         case "pencil":
-            canvas.addEventListener("mousedown", drawListener);
             canvas.addEventListener("mousemove", drawListener);
-            canvas.addEventListener("mouseup", drawListener);
-            canvas.addEventListener("mouseout", drawListener);
+            canvas.addEventListener("mouseleave", drawListener);
+            canvas.addEventListener("mousedown", drawListener);
+            window.addEventListener("mouseup", drawListener);
             break;
         case "eraser":
 
@@ -116,7 +92,7 @@ colorBtn.addEventListener("change", function () {
     ctx.strokeStyle = colorBtn.value;
 });
 
-size.addEventListener("change", () => {
+size.addEventListener("change", function() {
     ctx.lineWidth = size.value;
 });
 
@@ -125,7 +101,6 @@ canvas.addEventListener('contextmenu', function (e) {
     savePopup.classList.toggle("none")
     
     let dataURL = canvas.toDataURL('image/png');
-    
     let imgTag = document.createElement('img');
     imgTag.setAttribute("src", dataURL);
     
