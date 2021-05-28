@@ -12,10 +12,13 @@ const downloadBtn = document.querySelector(".save #download");
 const title = document.querySelector(".save .title")
 
 let drawable = false;
-let shapes = undefined;
+let shape = undefined;
+let saveShape = false;
 
 let rec = {X: 0, Y: 0}
 let pos = {X: 0, Y: 0}
+
+let shapes = [];
 
 const reset = function () {
     [...tools.children].forEach((data) => data.style.background = "#fff");
@@ -24,7 +27,7 @@ const reset = function () {
     colorBtn.value = "#000000"
     size.value = 3;
     ctx.lineWidth = 1;
-    shapes = undefined;
+    shape = undefined;
 
     canvas.removeEventListener("mousedown", drawListener);
     window.removeEventListener("mousemove", drawListener);
@@ -40,6 +43,7 @@ const saveReset = function(){
     photoBox.innerHTML = '';
     title.value ='';
 }
+
 
 const initDraw = function (e) {
     ctx.beginPath();
@@ -73,21 +77,30 @@ const drawListener = function (e) {
 const downShapes = function (e) {
     ctx.beginPath();
     drawable = true;
+    saveShape = true;
     rec.X = e.pageX - canvas.offsetLeft
     rec.Y = e.pageY - canvas.offsetTop
-    console.log(rec.X, rec.Y);
 };
 
 
 const moveShapes = function(e){
-    if(pos.X !== 0 && pos.Y !== 0)
-        if(shapes === "rectangle")
+    if(pos.X !== 0 && pos.Y !== 0){
+        if(shape === "rectangle"){
             ctx.clearRect(rec.X, rec.Y, pos.X - rec.X, pos.Y - rec.Y);
+        }
+    }
+    shapes.map((data)=>{
+        if(data.type === "rectangle"){
+            ctx.fillStyle = data.color;
+            ctx.fillRect(data.X, data.Y, data.wit, data.heg);
+            ctx.fillStyle = data.color;
+        }
+    })
     pos = {
         X: e.pageX - canvas.offsetLeft,
         Y: e.pageY - canvas.offsetTop
     }
-    if(shapes === "rectangle"){
+    if(shape === "rectangle"){
         ctx.fillRect(rec.X, rec.Y, pos.X - rec.X, pos.Y - rec.Y);
     } else {
         ctx.arc((pos.X - rec.X), (pos.Y - rec.Y), (pos.X - rec.X) / 2, 0, Math.PI * 2);
@@ -96,8 +109,18 @@ const moveShapes = function(e){
 }
 
 const upShapes = function(){
+    if(saveShape){
+        shapes.push(
+            {type: shape, X: rec.X, Y: rec.Y, wit: pos.X - rec.X, 
+                heg: pos.Y - rec.Y, color: colorBtn.value}
+        )
+    }
+    console.log(shapes);
+    // console.log(typeof(shapes[0].color));
     ctx.beginPath();
     pos = {X: 0, Y: 0}
+    rec = {X: 0, Y: 0}
+    saveShape = false;
 }
 
 
@@ -107,7 +130,7 @@ const shapesListener = function (e) {
             downShapes(e);
             break;
         case "mousemove":
-            if(drawable)
+            if(drawable && shape !== undefined)
                 moveShapes(e);
             break;
         case "mouseup":
@@ -134,13 +157,15 @@ tools.addEventListener("click", function ({ target }) {
 
             break;
         case "rectangle":
-            shapes = "rectangle";
+            shape = "rectangle";
+
             canvas.addEventListener("mousedown", shapesListener);
             window.addEventListener("mouseup", shapesListener);
             window.addEventListener("mousemove", shapesListener);
             break;
         case "circle":
-            shapes = "circle";
+            shape = "circle";
+
             canvas.addEventListener("mousedown", shapesListener);
             window.addEventListener("mouseup", shapesListener);
             window.addEventListener("mousemove", shapesListener);
@@ -184,3 +209,6 @@ closeBtn.addEventListener("click", function(){
     savePopup.classList.toggle("none");
     saveReset();
 })
+
+
+// 색상 변경 다시 해야함, 원그리기 안됨
