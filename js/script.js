@@ -11,14 +11,18 @@ const photoBox = document.querySelector(".save .photo-box");
 const downloadBtn = document.querySelector(".save #download");
 const title = document.querySelector(".save .title")
 
+
+const xx = document.querySelector(".x");
+const yy = document.querySelector(".y");
+const resetBtn = document.querySelector(".resetBtn");
+
 let drawable = false;
-let shape = undefined;
-let saveShape = false;
+let shape = "";
+let color = "";
 
 let rec = {X: 0, Y: 0}
 let pos = {X: 0, Y: 0}
-
-let shapes = [];
+ 
 
 const reset = function () {
     [...tools.children].forEach((data) => data.style.background = "#fff");
@@ -27,7 +31,8 @@ const reset = function () {
     colorBtn.value = "#000000"
     size.value = 3;
     ctx.lineWidth = 1;
-    shape = undefined;
+    color = "";
+    shape = "";
 
     canvas.removeEventListener("mousedown", drawListener);
     window.removeEventListener("mousemove", drawListener);
@@ -52,6 +57,7 @@ const initDraw = function (e) {
 };
 
 const draw = function (e) {
+    e.preventDefault();
     ctx.lineTo(e.pageX - canvas.offsetLeft, e.pageY - canvas.offsetTop);
     ctx.stroke();
 };
@@ -77,25 +83,18 @@ const drawListener = function (e) {
 const downShapes = function (e) {
     ctx.beginPath();
     drawable = true;
-    saveShape = true;
     rec.X = e.pageX - canvas.offsetLeft
     rec.Y = e.pageY - canvas.offsetTop
 };
 
 
 const moveShapes = function(e){
+    e.preventDefault();
     if(pos.X !== 0 && pos.Y !== 0){
         if(shape === "rectangle"){
             ctx.clearRect(rec.X, rec.Y, pos.X - rec.X, pos.Y - rec.Y);
         }
     }
-    shapes.map((data)=>{
-        if(data.type === "rectangle"){
-            ctx.fillStyle = data.color;
-            ctx.fillRect(data.X, data.Y, data.wit, data.heg);
-            ctx.fillStyle = data.color;
-        }
-    })
     pos = {
         X: e.pageX - canvas.offsetLeft,
         Y: e.pageY - canvas.offsetTop
@@ -109,18 +108,9 @@ const moveShapes = function(e){
 }
 
 const upShapes = function(){
-    if(saveShape){
-        shapes.push(
-            {type: shape, X: rec.X, Y: rec.Y, wit: pos.X - rec.X, 
-                heg: pos.Y - rec.Y, color: colorBtn.value}
-        )
-    }
-    console.log(shapes);
-    // console.log(typeof(shapes[0].color));
     ctx.beginPath();
     pos = {X: 0, Y: 0}
     rec = {X: 0, Y: 0}
-    saveShape = false;
 }
 
 
@@ -130,7 +120,7 @@ const shapesListener = function (e) {
             downShapes(e);
             break;
         case "mousemove":
-            if(drawable && shape !== undefined)
+            if(drawable)
                 moveShapes(e);
             break;
         case "mouseup":
@@ -139,8 +129,6 @@ const shapesListener = function (e) {
             break;
     }
 };
-
-reset();
 
 tools.addEventListener("click", function ({ target }) {
     reset();
@@ -176,6 +164,7 @@ tools.addEventListener("click", function ({ target }) {
 
 colorBtn.addEventListener("change", function (){
     ctx.fillStyle = colorBtn.value;
+    color = colorBtn.value;
     ctx.strokeStyle = colorBtn.value;
 });
 
@@ -211,4 +200,15 @@ closeBtn.addEventListener("click", function(){
 })
 
 
-// 색상 변경 다시 해야함, 원그리기 안됨
+
+canvas.addEventListener("mousemove", function(event){
+    let x = event.pageX - canvas.offsetLeft;
+    let y = event.pageY - canvas.offsetTop;
+    xx.value = `x: ${x}`;
+    yy.value = `y: ${y}`;
+});
+
+resetBtn.addEventListener("click", function(){
+    const context = canvas.getContext('2d');
+    context.clearRect(0, 0, canvas.width, canvas.height);
+});
