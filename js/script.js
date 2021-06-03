@@ -20,9 +20,9 @@ let drawable = false;
 let shape = "";
 let color = "";
 
-let rec = {X: 0, Y: 0}
-let pos = {X: 0, Y: 0}
- 
+let rec = { X: 0, Y: 0 }
+let pos = { X: 0, Y: 0 }
+
 
 const reset = function () {
     [...tools.children].forEach((data) => data.style.background = "#fff");
@@ -37,28 +37,31 @@ const reset = function () {
     canvas.removeEventListener("mousedown", drawListener);
     window.removeEventListener("mousemove", drawListener);
     window.removeEventListener("mouseup", drawListener);
-    canvas.removeEventListener("mouseenter", drawListener);
 
     canvas.removeEventListener("mousedown", shapesListener);
     window.removeEventListener("mouseup", shapesListener);
     window.removeEventListener("mousemove", shapesListener);
+
+    canvas.removeEventListener("mousedown", clearListrer);
+    canvas.removeEventListener("mousemove", clearListrer);
+    window.removeEventListener("mouseup", clearListrer);
 };
 
-const saveReset = function(){
+const saveReset = function () {
     photoBox.innerHTML = '';
-    title.value ='';
+    title.value = '';
 }
 
 
 const initDraw = function (e) {
     ctx.beginPath();
     drawable = true;
-    ctx.moveTo(e.pageX - canvas.offsetLeft, e.pageY - canvas.offsetTop);
+    ctx.moveTo(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop);
 };
 
 const draw = function (e) {
     e.preventDefault();
-    ctx.lineTo(e.pageX - canvas.offsetLeft, e.pageY - canvas.offsetTop);
+    ctx.lineTo(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop);
     ctx.stroke();
 };
 
@@ -74,32 +77,53 @@ const drawListener = function (e) {
         case "mouseup":
             drawable = false;
             break;
-        case "mouseleave":
-            ctx.beginPath();
-            break;
     }
 };
+
+const clearMove = function(e){
+    e.preventDefault();
+    let clearSize = Number(size.value)*10;
+    let X = e.clientX - canvas.offsetLeft;
+    let Y = e.clientY - canvas.offsetTop;
+    ctx.clearRect(X - (clearSize/2), Y - (clearSize/2), clearSize, clearSize);
+
+}
+
+const clearListrer = function (e) {
+    switch (e.type) {
+        case "mousedown":
+            drawable = true;
+            break;
+        case "mousemove":
+            if(drawable) 
+                clearMove(e);
+            break;
+        case "mouseup":
+            drawable = false;
+            break;
+    }
+}
 
 const downShapes = function (e) {
     ctx.beginPath();
     drawable = true;
-    rec.X = e.pageX - canvas.offsetLeft
-    rec.Y = e.pageY - canvas.offsetTop
+    rec.X = e.clientX - canvas.offsetLeft
+    rec.Y = e.clientY - canvas.offsetTop
 };
 
 
-const moveShapes = function(e){
+const moveShapes = function (e) {
     e.preventDefault();
-    if(pos.X !== 0 && pos.Y !== 0){
-        if(shape === "rectangle"){
+    if (pos.X !== 0 && pos.Y !== 0) {
+        if (shape === "rectangle") {
             ctx.clearRect(rec.X, rec.Y, pos.X - rec.X, pos.Y - rec.Y);
         }
     }
     pos = {
-        X: e.pageX - canvas.offsetLeft,
-        Y: e.pageY - canvas.offsetTop
+        X: e.clientX - canvas.offsetLeft,
+        Y: e.clientY - canvas.offsetTop
     }
-    if(shape === "rectangle"){
+    if (shape === "rectangle") {
         ctx.fillRect(rec.X, rec.Y, pos.X - rec.X, pos.Y - rec.Y);
     } else {
         ctx.arc((pos.X - rec.X), (pos.Y - rec.Y), (pos.X - rec.X) / 2, 0, Math.PI * 2);
@@ -107,10 +131,10 @@ const moveShapes = function(e){
     }
 }
 
-const upShapes = function(){
+const upShapes = function () {
     ctx.beginPath();
-    pos = {X: 0, Y: 0}
-    rec = {X: 0, Y: 0}
+    pos = { X: 0, Y: 0 }
+    rec = { X: 0, Y: 0 }
 }
 
 
@@ -120,7 +144,7 @@ const shapesListener = function (e) {
             downShapes(e);
             break;
         case "mousemove":
-            if(drawable)
+            if (drawable)
                 moveShapes(e);
             break;
         case "mouseup":
@@ -137,11 +161,13 @@ tools.addEventListener("click", function ({ target }) {
     switch (target.parentNode.classList[0]) {
         case "pencil":
             window.addEventListener("mousemove", drawListener);
-            canvas.addEventListener("mouseleave", drawListener);
             canvas.addEventListener("mousedown", drawListener);
             window.addEventListener("mouseup", drawListener);
             break;
         case "eraser":
+            canvas.addEventListener("mousedown", clearListrer);
+            canvas.addEventListener("mousemove", clearListrer);
+            window.addEventListener("mouseup", clearListrer);
 
             break;
         case "rectangle":
@@ -162,30 +188,30 @@ tools.addEventListener("click", function ({ target }) {
 });
 
 
-colorBtn.addEventListener("change", function (){
+colorBtn.addEventListener("change", function () {
     ctx.fillStyle = colorBtn.value;
     color = colorBtn.value;
     ctx.strokeStyle = colorBtn.value;
 });
 
-size.addEventListener("change", function(){
+size.addEventListener("change", function () {
     ctx.lineWidth = size.value;
 });
 
-canvas.addEventListener('contextmenu', function (e){
+canvas.addEventListener('contextmenu', function (e) {
     e.preventDefault();
     savePopup.classList.toggle("none")
-    
+
     let dataURL = canvas.toDataURL('image/png');
     let imgTag = document.createElement('img');
     imgTag.setAttribute("src", dataURL);
-    
+
     photoBox.append(imgTag);
 });
 
-downloadBtn.addEventListener("click", function(){
+downloadBtn.addEventListener("click", function () {
     let dataURL = canvas.toDataURL('image/png');
-    
+
     let aTag = document.createElement('a');
     aTag.download = title.value;
     aTag.href = dataURL;
@@ -194,21 +220,21 @@ downloadBtn.addEventListener("click", function(){
     closeBtn.click();
 })
 
-closeBtn.addEventListener("click", function(){
+closeBtn.addEventListener("click", function () {
     savePopup.classList.toggle("none");
     saveReset();
 })
 
 
 
-canvas.addEventListener("mousemove", function(event){
-    let x = event.pageX - canvas.offsetLeft;
-    let y = event.pageY - canvas.offsetTop;
+canvas.addEventListener("mousemove", function (e) {
+    let x = e.clientX - canvas.offsetLeft;
+    let y = e.clientY - canvas.offsetTop;
     xx.value = `x: ${x}`;
     yy.value = `y: ${y}`;
 });
 
-resetBtn.addEventListener("click", function(){
+resetBtn.addEventListener("click", function () {
     const context = canvas.getContext('2d');
     context.clearRect(0, 0, canvas.width, canvas.height);
 });
