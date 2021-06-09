@@ -34,7 +34,7 @@ const layerRender = () => {
     canvasArray.forEach((canvas, index) => {
         layerBox.insertAdjacentHTML("beforeend", `
             <div class="layer">
-                <img src="${prevActivityArray[index].slice(-1)}">
+                ${prevActivityArray[index] !== undefined ? `<img src="${prevActivityArray[index].slice(-1)}">` : ""}
             </div>
         `);
     });
@@ -120,8 +120,16 @@ window.addEventListener("keydown", ({ key }) => {
     if(key === "Z" && ctrlCheck && shiftCheck) return nextActivity();
 });
 
-const addLayer = () => canvasArray.push(newCanvas());
-const deleteLayer = () => canvasArray.length !== 1 ? canvasArray.pop() : alert("마지막 레이어는 삭제할 수 없습니다");
+const addLayer = () => {
+    canvasArray.push(newCanvas());
+    
+    layerRender();
+};
+const deleteLayer = () => {
+    canvasArray.length !== 1 ? canvasArray.pop() : alert("마지막 레이어는 삭제할 수 없습니다");
+    
+    layerRender();
+};
 
 const $addLayerButton = document.querySelector("#add-layer");
 $addLayerButton.addEventListener("click", addLayer);
