@@ -26,30 +26,32 @@ getCanvas().height = window.innerHeight;
 const prevActivityArray = [[getCanvas().toDataURL()]];
 const nextActivityArray = [[]];
 
+const clearCanvas = (canvas, ctx) => {
+    ctx.fillStyle = "white";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = "#333";
+};
+
 const save = () => prevActivityArray[focus].push(getCanvas().toDataURL());
 const prevActivity = () => {
-    const [$canvas, ctx] = initialize();
-
     if(prevActivityArray[focus].length === 0) return;
 
-    nextActivityArray[focus].push(prevActivityArray[focus].pop());
+    const [$canvas, ctx] = initialize();
 
-    ctx.fillStyle = "white";
-    ctx.fillRect(0, 0, $canvas.width, $canvas.height);
-    ctx.fillStyle = "#333";
+    clearCanvas($canvas, ctx);
+
+    nextActivityArray[focus].push(prevActivityArray[focus].pop());
 
     const image = new Image();
     image.src = prevActivityArray[focus].slice(-1);
     image.onload = () => ctx.drawImage(image, 0, 0, $canvas.width, $canvas.height);
 };
 const nextActivity = () => {
-    const [$canvas, ctx] = initialize();
-
     if(nextActivityArray[focus].length === 0) return;
     
-    ctx.fillStyle = "white";
-    ctx.fillRect(0, 0, $canvas.width, $canvas.height);
-    ctx.fillStyle = "#333";
+    const [$canvas, ctx] = initialize();
+    
+    clearCanvas($canvas, ctx);
 
     const image = new Image();
     image.src = nextActivityArray[focus].slice(-1);
