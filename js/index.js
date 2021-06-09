@@ -1,61 +1,87 @@
+let focus = 0;
+
 const html = document.querySelector("html");
 const body = document.querySelector("body");
-const $canvas = document.querySelector("#canvas");
-const ctx = $canvas.getContext("2d");
-const prevActivityArray = [$canvas.toDataURL()];
-const nextActivityArray = [];
 
-ctx.fillStyle = "#333";
+const layerArray = [document.querySelector("#canvas")];
+
+const getCanvas = index => layerArray[index ?? focus];
+const getCtx = () => getCanvas().getContext("2d");
+const initialize = () => [getCanvas(), getCtx()];
+
+const setCanvasSize = (canvas, width, height) => {
+    canvas.width = width;
+    canvas.height = height;
+};
+
+const newCanvas = () => document.createElement("canvas");
+
+getCtx().fillStyle = "#333";
 
 let mouseDownCheck = false;
 
-$canvas.width = window.innerWidth;
-$canvas.height = window.innerHeight;
+getCanvas().width = window.innerWidth;
+getCanvas().height = window.innerHeight;
 
-const save = () => prevActivityArray.push($canvas.toDataURL());
+const prevActivityArray = [[getCanvas().toDataURL()]];
+const nextActivityArray = [[]];
+
+const save = () => prevActivityArray[focus].push(getCanvas().toDataURL());
 const prevActivity = () => {
-    if(prevActivityArray.length !== 0) {
-        nextActivityArray.push(prevActivityArray.pop());
+    const [$canvas, ctx] = initialize();
 
-        ctx.fillStyle = "white";
-        ctx.fillRect(0, 0, $canvas.width, $canvas.height);
-        ctx.fillStyle = "#333";
+    if(prevActivityArray[focus].length === 0) return;
 
-        const image = new Image();
-        image.src = prevActivityArray.slice(-1);
-        image.onload = () => ctx.drawImage(image, 0, 0, $canvas.width, $canvas.height);
-    };
+    nextActivityArray[focus].push(prevActivityArray[focus].pop());
+
+    ctx.fillStyle = "white";
+    ctx.fillRect(0, 0, $canvas.width, $canvas.height);
+    ctx.fillStyle = "#333";
+
+    const image = new Image();
+    image.src = prevActivityArray[focus].slice(-1);
+    image.onload = () => ctx.drawImage(image, 0, 0, $canvas.width, $canvas.height);
 };
 const nextActivity = () => {
-    if(nextActivityArray.length !== 0) {
-        ctx.fillStyle = "white";
-        ctx.fillRect(0, 0, $canvas.width, $canvas.height);
-        ctx.fillStyle = "#333";
+    const [$canvas, ctx] = initialize();
 
-        const image = new Image();
-        image.src = nextActivityArray.slice(-1);
-        image.onload = () => ctx.drawImage(image, 0, 0, $canvas.width, $canvas.height);
+    if(nextActivityArray[focus].length === 0) return;
+    
+    ctx.fillStyle = "white";
+    ctx.fillRect(0, 0, $canvas.width, $canvas.height);
+    ctx.fillStyle = "#333";
 
-        prevActivityArray.push(nextActivityArray.pop());
-    };
+    const image = new Image();
+    image.src = nextActivityArray[focus].slice(-1);
+    image.onload = () => ctx.drawImage(image, 0, 0, $canvas.width, $canvas.height);
+
+    prevActivityArray[focus].push(nextActivityArray[focus].pop());
 };
 
-$canvas.addEventListener("mousedown", event => {
+html.addEventListener("mousedown", ({ target, clientX, clientY }) => {
+    if(target.tagName.toLowerCase() !== "canvas") return;
+
+    const [, ctx] = initialize();
+
     mouseDownCheck = true;
 
-    if(nextActivityArray.length !== 0) nextActivityArray.length = 0;
+    if(nextActivityArray.length !== 0) nextActivityArray[focus].length = 0;
     ctx.beginPath();
-    ctx.moveTo(event.clientX, event.clientY);
+    ctx.moveTo(clientX, clientY);
 });
 
-$canvas.addEventListener("mousemove", event => {
+html.addEventListener("mousemove", ({ target, clientX, clientY }) => {
+    if(target.tagName.toLowerCase() !== "canvas") return;
+
+    const [, ctx] = initialize();
+
     if(mouseDownCheck) {
-        ctx.lineTo(event.clientX, event.clientY);
+        ctx.lineTo(clientX, clientY);
         ctx.stroke();
     };
 });
 
-$canvas.addEventListener("mouseup", event => {
+html.addEventListener("mouseup", () => {
     mouseDownCheck = false;
     save();
 });
