@@ -2,6 +2,7 @@ let focus = 0;
 
 const html = document.querySelector("html");
 const body = document.querySelector("body");
+const layerBox = document.querySelector("#layer-box");
 
 const canvasArray = [document.querySelector("#canvas")];
 
@@ -27,6 +28,19 @@ getCanvas().style.border = "1px solid #333";
 const prevActivityArray = [[getCanvas().toDataURL()]];
 const nextActivityArray = [[]];
 
+const layerRender = () => {
+    layerBox.innerHTML = "";
+
+    canvasArray.forEach((canvas, index) => {
+        layerBox.insertAdjacentHTML("beforeend", `
+            <div class="layer">
+                <img src="${prevActivityArray[index].slice(-1)}">
+            </div>
+        `);
+    });
+};
+layerRender();
+
 const clearCanvas = (canvas, ctx) => {
     ctx.fillStyle = "white";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -46,6 +60,7 @@ const prevActivity = () => {
     const image = new Image();
     image.src = prevActivityArray[focus].slice(-1);
     image.onload = () => ctx.drawImage(image, 0, 0, $canvas.width, $canvas.height);
+    layerRender();
 };
 const nextActivity = () => {
     if(nextActivityArray[focus].length === 0) return;
@@ -59,6 +74,7 @@ const nextActivity = () => {
     image.onload = () => ctx.drawImage(image, 0, 0, $canvas.width, $canvas.height);
 
     prevActivityArray[focus].push(nextActivityArray[focus].pop());
+    layerRender();
 };
 
 html.addEventListener("mousedown", ({ target, clientX, clientY }) => {
@@ -76,7 +92,7 @@ html.addEventListener("mousedown", ({ target, clientX, clientY }) => {
 html.addEventListener("mousemove", ({ target, clientX, clientY }) => {
     if(mouseDownCheck) {
         const [, ctx] = initialize();
-        
+
         ctx.lineTo(clientX, clientY);
         ctx.stroke();
     };
@@ -85,6 +101,7 @@ html.addEventListener("mousemove", ({ target, clientX, clientY }) => {
 html.addEventListener("mouseup", () => {
     mouseDownCheck = false;
     save();
+    layerRender();
 });
 
 let ctrlCheck = false;
