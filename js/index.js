@@ -3,9 +3,9 @@ let focus = 0;
 const html = document.querySelector("html");
 const body = document.querySelector("body");
 
-const layerArray = [document.querySelector("#canvas")];
+const canvasArray = [document.querySelector("#canvas")];
 
-const getCanvas = index => layerArray[index ?? focus];
+const getCanvas = index => canvasArray[index ?? focus];
 const getCtx = () => getCanvas().getContext("2d");
 const initialize = () => [getCanvas(), getCtx()];
 
@@ -20,8 +20,9 @@ getCtx().fillStyle = "#333";
 
 let mouseDownCheck = false;
 
-getCanvas().width = window.innerWidth;
-getCanvas().height = window.innerHeight;
+getCanvas().width = window.innerWidth / 2;
+getCanvas().height = window.innerHeight / 2;
+getCanvas().style.border = "1px solid #333";
 
 const prevActivityArray = [[getCanvas().toDataURL()]];
 const nextActivityArray = [[]];
@@ -73,11 +74,9 @@ html.addEventListener("mousedown", ({ target, clientX, clientY }) => {
 });
 
 html.addEventListener("mousemove", ({ target, clientX, clientY }) => {
-    if(target.tagName.toLowerCase() !== "canvas") return;
-
-    const [, ctx] = initialize();
-
     if(mouseDownCheck) {
+        const [, ctx] = initialize();
+        
         ctx.lineTo(clientX, clientY);
         ctx.stroke();
     };
@@ -103,3 +102,12 @@ window.addEventListener("keydown", ({ key }) => {
     if(key === "z" && ctrlCheck) return prevActivity();
     if(key === "Z" && ctrlCheck && shiftCheck) return nextActivity();
 });
+
+const addLayer = () => canvasArray.push(newCanvas());
+const deleteLayer = () => canvasArray.length !== 1 ? canvasArray.pop() : alert("마지막 레이어는 삭제할 수 없습니다");
+
+const $addLayerButton = document.querySelector("#add-layer");
+$addLayerButton.addEventListener("click", addLayer);
+
+const $deleteLayerButton = document.querySelector("#delete-laeyr");
+$deleteLayerButton.addEventListener("click", deleteLayer);
