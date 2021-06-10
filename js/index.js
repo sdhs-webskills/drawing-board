@@ -171,9 +171,9 @@ const addLayer = () => {
 const deleteLayer = () => {
     if(canvasArray.length === 1) return alert("마지막 레이어는 삭제할 수 없습니다");
 
-    canvasArray.pop();
-    prevActivityArray.pop();
-    nextActivityArray.pop();
+    canvasArray.splice(focus, 1);
+    prevActivityArray.splice(focus, 1);
+    nextActivityArray.splice(focus, 1);
     
     canvasRender();
     layerRender();
