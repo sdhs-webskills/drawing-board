@@ -100,9 +100,11 @@ html.addEventListener("mousemove", ({ target, clientX, clientY }) => {
 });
 
 html.addEventListener("mouseup", () => {
-    mouseDownCheck = false;
-    save();
-    layerRender();
+    if(mouseDownCheck) {
+        mouseDownCheck = false;
+        save();
+        layerRender();
+    };
 });
 
 let ctrlCheck = false;
