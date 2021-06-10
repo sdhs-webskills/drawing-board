@@ -18,6 +18,19 @@ const setCanvasSize = canvas => {
     canvas.style.border = "1px solid #333";
 };
 
+window.addEventListener("resize", event => {
+    canvasArray.map((canvas, index) => {
+        canvas.width = window.innerWidth / 2;
+        canvas.height = window.innerHeight / 2;
+
+        prevActivityArray[index].map(url => {
+            const image = new Image();
+            image.src = url;
+            image.onload = () => canvas.getContext("2d").drawImage(image, 0, 0, canvas.width, canvas.height);
+        });
+    });
+});
+
 const newCanvas = () => document.createElement("canvas");
 
 let mouseDownCheck = false;
