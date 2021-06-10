@@ -142,6 +142,7 @@ $addLayerButton.addEventListener("click", addLayer);
 
 const $deleteLayerButton = document.querySelector("#delete-laeyr");
 $deleteLayerButton.addEventListener("click", deleteLayer);
+
 $layerBox.addEventListener("click", ({ target }) => {
     [...document.querySelectorAll(".layer")].map(layer => layer.classList.remove("focus-layer"));
     focus = null;
