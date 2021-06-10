@@ -29,6 +29,7 @@
     padding: 5px;
     color: white;
     background: #333;
+    user-select: none;;
 }
 .layer > img{
     width: 100px;
