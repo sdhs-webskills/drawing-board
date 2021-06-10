@@ -142,3 +142,21 @@ $addLayerButton.addEventListener("click", addLayer);
 
 const $deleteLayerButton = document.querySelector("#delete-laeyr");
 $deleteLayerButton.addEventListener("click", deleteLayer);
+$layerBox.addEventListener("click", ({ target }) => {
+    [...document.querySelectorAll(".layer")].map(layer => layer.classList.remove("focus-layer"));
+    focus = null;
+
+    if(target.classList.contains("layer")) {
+        [...document.querySelectorAll(".layer")].map((layer, index) => layer === target ? focus = index : "");
+
+        return target.classList.add("focus-layer");
+    };
+
+    if(!target.classList.contains("layer")) {
+        if(target.parentNode.classList.contains("layer")) {
+            [...document.querySelectorAll(".layer")].map((layer, index) => layer === target.parentNode ? focus = index : "");
+
+            target.parentNode.classList.add("focus-layer");
+        };
+    };
+});
