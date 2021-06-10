@@ -134,10 +134,10 @@ window.addEventListener("keydown", ({ key }) => {
 });
 
 const addLayer = () => {
-    canvasArray.push(newCanvas());
     const canvas = newCanvas();
     setCanvasSize(canvas);
 
+    canvasArray.push(canvas);
     prevActivityArray.push([prevActivityArray[0][0]]);
     
     canvasRender();
