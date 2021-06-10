@@ -17,8 +17,6 @@ const setCanvasSize = (canvas, width, height) => {
 
 const newCanvas = () => document.createElement("canvas");
 
-getCtx().fillStyle = "#333";
-
 let mouseDownCheck = false;
 
 getCanvas().width = window.innerWidth / 2;
