@@ -23,6 +23,10 @@ getCanvas().width = window.innerWidth / 2;
 getCanvas().height = window.innerHeight / 2;
 getCanvas().style.border = "1px solid #333";
 
+getCtx().fillStyle = "white";
+getCtx().fillRect(0, 0, getCanvas().width, getCanvas().height);
+getCtx().fillStyle = "#333";
+
 const prevActivityArray = [[getCanvas().toDataURL()]];
 const nextActivityArray = [[]];
 
