@@ -101,6 +101,16 @@ const nextActivity = () => {
     layerRender();
 };
 
+const getCanvasIndex = target => {
+    for(let i = 0, limit = $layerBox.children.length; i < limit; i++) {
+        const layer = $layerBox.children[i];
+
+        if(layer === target) {
+            return i;
+        };
+    }
+};
+
 html.addEventListener("mousedown", ({ target, clientX, clientY }) => {
     if(target.tagName.toLowerCase() !== "canvas") return;
     if(focus === null) return alert("레이어를 선택해주세요");
@@ -180,14 +190,14 @@ $layerBox.addEventListener("click", ({ target }) => {
     focus = null;
 
     if(target.classList.contains("layer")) {
-        [...document.querySelectorAll(".layer")].map((layer, index) => layer === target ? focus = index : "");
+        focus = getCanvasIndex(target);
 
         return target.classList.add("focus-layer");
     };
 
     if(!target.classList.contains("layer")) {
         if(target.parentNode.classList.contains("layer")) {
-            [...document.querySelectorAll(".layer")].map((layer, index) => layer === target.parentNode ? focus = index : "");
+            focus = getCanvasIndex(target.parentNode);
 
             target.parentNode.classList.add("focus-layer");
         };
