@@ -11,18 +11,18 @@ const getCanvas = index => canvasArray[index ?? focus];
 const getCtx = () => getCanvas().getContext("2d");
 const initialize = () => [getCanvas(), getCtx()];
 
-const setCanvasSize = (canvas, width, height) => {
-    canvas.width = width;
-    canvas.height = height;
+const setCanvasSize = canvas => {
+    canvas.width = window.innerWidth / 2;
+    canvas.height = window.innerHeight / 2;
+    canvas.style.position = "absolute";
+    canvas.style.border = "1px solid #333";
 };
 
 const newCanvas = () => document.createElement("canvas");
 
 let mouseDownCheck = false;
 
-getCanvas().width = window.innerWidth / 2;
-getCanvas().height = window.innerHeight / 2;
-getCanvas().style.border = "1px solid #333";
+setCanvasSize(getCanvas());
 
 getCtx().fillStyle = "white";
 getCtx().fillRect(0, 0, getCanvas().width, getCanvas().height);
@@ -135,6 +135,9 @@ window.addEventListener("keydown", ({ key }) => {
 
 const addLayer = () => {
     canvasArray.push(newCanvas());
+    const canvas = newCanvas();
+    setCanvasSize(canvas);
+
     prevActivityArray.push([prevActivityArray[0][0]]);
     
     canvasRender();
