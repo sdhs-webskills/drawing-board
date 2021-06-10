@@ -49,7 +49,7 @@ const clearCanvas = (canvas, ctx) => {
 
 const save = () => prevActivityArray[focus].push(getCanvas().toDataURL());
 const prevActivity = () => {
-    if(prevActivityArray[focus].length === 0) return;
+    if(prevActivityArray[focus].length === 1) return;
 
     const [$canvas, ctx] = initialize();
 
