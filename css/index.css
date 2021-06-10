@@ -34,6 +34,8 @@
     width: 100px;
     height: 100%;
     border: 1px solid white;;
+    background: white;
 }
+.layer > p{ margin-right: 5%; }
 
 .focus-layer{ background: #707c92; }
