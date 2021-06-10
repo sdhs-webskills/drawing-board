@@ -71,12 +71,6 @@ const canvasRender =  () => {
 };
 canvasRender();
 
-const clearCanvas = (canvas, ctx) => {
-    ctx.fillStyle = "white";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = "#333";
-};
-
 const save = () => prevActivityArray[focus].push(getCanvas().toDataURL());
 const prevActivity = () => {
     if(prevActivityArray[focus].length === 1) return;
