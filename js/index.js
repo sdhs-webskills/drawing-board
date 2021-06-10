@@ -151,7 +151,8 @@ const addLayer = () => {
     setCanvas(canvas);
 
     canvasArray.push(canvas);
-    prevActivityArray.push([prevActivityArray[0][0]]);
+    prevActivityArray.push([canvas.toDataURL()]);
+    nextActivityArray.push([]);
     
     canvasRender();
     layerRender();
