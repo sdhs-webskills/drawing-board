@@ -77,7 +77,7 @@ const prevActivity = () => {
 
     const [$canvas, ctx] = initialize();
 
-    clearCanvas($canvas, ctx);
+    ctx.clearRect(0, 0, $canvas.width, $canvas.height);
 
     nextActivityArray[focus].push(prevActivityArray[focus].pop());
 
@@ -91,7 +91,7 @@ const nextActivity = () => {
     
     const [$canvas, ctx] = initialize();
     
-    clearCanvas($canvas, ctx);
+    ctx.clearRect(0, 0, $canvas.width, $canvas.height);
 
     const image = new Image();
     image.src = nextActivityArray[focus].slice(-1);
