@@ -6,23 +6,29 @@
     width: 20%;
     min-height: 200px;
     max-height: 375px;
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 10px;
     border: 1px solid #333;
     background: #333;
     overflow-y: scroll;
-    padding-top: 10px;
 }
 #layer-box::-webkit-scrollbar{ display: none; }
+
 .layer{
     width: 90%;
-    height: 150px;
-    margin: auto;
+    height: 80px;
+    margin: 10px auto;
     border: 1px solid white;
     background: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px;
+    color: white;
+    background: #333;
 }
 .layer > img{
-    width: 100%;
+    width: 100px;
     height: 100%;
+    border: 1px solid white;;
 }
+
+.focus-layer{ background: #707c92; }
