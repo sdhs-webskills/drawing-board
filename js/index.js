@@ -11,6 +11,12 @@ const getCanvas = index => canvasArray[index ?? focus];
 const getCtx = () => getCanvas().getContext("2d");
 const initialize = () => [getCanvas(), getCtx()];
 
+const clearCanvas = (canvas, ctx) => {
+    ctx.fillStyle = "white";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = "#333";
+};
+
 const setCanvas = canvas => {
     canvas.width = window.innerWidth / 2;
     canvas.height = window.innerHeight / 2;
