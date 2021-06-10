@@ -2,7 +2,7 @@ let focus = 0;
 
 const html = document.querySelector("html");
 const body = document.querySelector("body");
-const layerBox = document.querySelector("#layer-box");
+const $layerBox = document.querySelector("#layer-box");
 
 const canvasArray = [document.querySelector("#canvas")];
 
@@ -29,12 +29,13 @@ const prevActivityArray = [[getCanvas().toDataURL()]];
 const nextActivityArray = [[]];
 
 const layerRender = () => {
-    layerBox.innerHTML = "";
+    $layerBox.innerHTML = "";
 
     canvasArray.forEach((canvas, index) => {
-        layerBox.insertAdjacentHTML("beforeend", `
-            <div class="layer">
-                ${prevActivityArray[index] !== undefined ? `<img src="${prevActivityArray[index].slice(-1)}">` : ""}
+        $layerBox.insertAdjacentHTML("beforeend", `
+            <div class="layer ${index === focus ? "focus-layer" : ""}">
+                ${`<img src="${prevActivityArray[index].slice(-1)}">`}
+                <p>새 레이어</p>
             </div>
         `);
     });
