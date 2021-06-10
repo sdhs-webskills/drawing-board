@@ -2,6 +2,7 @@ let focus = 0;
 
 const html = document.querySelector("html");
 const body = document.querySelector("body");
+const $canvasBox = document.querySelector("#canvas-box");
 const $layerBox = document.querySelector("#layer-box");
 
 const canvasArray = [document.querySelector("#canvas")];
@@ -43,6 +44,13 @@ const layerRender = () => {
     });
 };
 layerRender();
+
+const canvasRender =  () => {
+    $canvasBox.innerHTML = "";
+    
+    canvasArray.forEach(canvas => $canvasBox.append(canvas));
+};
+canvasRender();
 
 const clearCanvas = (canvas, ctx) => {
     ctx.fillStyle = "white";
@@ -129,11 +137,13 @@ const addLayer = () => {
     canvasArray.push(newCanvas());
     prevActivityArray.push([prevActivityArray[0][0]]);
     
+    canvasRender();
     layerRender();
 };
 const deleteLayer = () => {
     canvasArray.length !== 1 ? canvasArray.pop() : alert("마지막 레이어는 삭제할 수 없습니다");
     
+    canvasRender();
     layerRender();
 };
 
