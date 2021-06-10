@@ -103,6 +103,7 @@ const nextActivity = () => {
 
 html.addEventListener("mousedown", ({ target, clientX, clientY }) => {
     if(target.tagName.toLowerCase() !== "canvas") return;
+    if(focus === null) return alert("레이어를 선택해주세요");
 
     const [, ctx] = initialize();
 
