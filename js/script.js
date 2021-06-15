@@ -24,7 +24,7 @@ let rec = { X: 0, Y: 0 }
 let pos = { X: 0, Y: 0 }
 
 
-const reset = function () {
+const reset = function (e) {
     [...tools.children].forEach((data) => data.style.background = "#fff");
     ctx.fillStyle = "#000000";
     ctx.strokeStyle = "#000000";
@@ -82,7 +82,7 @@ const drawListener = function (e) {
 
 const clearMove = function(e){
     e.preventDefault();
-    let clearSize = Number(size.value)*10;
+    let clearSize = size.value*5;
     let X = e.clientX - canvas.offsetLeft;
     let Y = e.clientY - canvas.offsetTop;
     ctx.clearRect(X - (clearSize/2), Y - (clearSize/2), clearSize, clearSize);
@@ -187,6 +187,7 @@ tools.addEventListener("click", function ({ target }) {
     };
 });
 
+window.addEventListener("blur", () => drawable = false);
 
 colorBtn.addEventListener("change", function () {
     ctx.fillStyle = colorBtn.value;
