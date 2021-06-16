@@ -11,40 +11,34 @@ const photoBox = document.querySelector(".save .photo-box");
 const downloadBtn = document.querySelector(".save #download");
 const title = document.querySelector(".save .title")
 
-
 const xx = document.querySelector(".x");
 const yy = document.querySelector(".y");
 const resetBtn = document.querySelector(".resetBtn");
 
 let drawable = false;
+let tool = "";
 let shape = "";
 let color = "";
 
 let rec = { X: 0, Y: 0 }
 let pos = { X: 0, Y: 0 }
 
-
 const reset = function (e) {
     [...tools.children].forEach((data) => data.style.background = "#fff");
     ctx.fillStyle = "#000000";
     ctx.strokeStyle = "#000000";
     colorBtn.value = "#000000"
-    size.value = 3;
-    ctx.lineWidth = 1;
+    size.value = 10;
+    ctx.lineWidth = 10;
     color = "";
     shape = "";
+    tool = "";
 
-    canvas.removeEventListener("mousedown", drawListener);
-    window.removeEventListener("mousemove", drawListener);
-    window.removeEventListener("mouseup", drawListener);
+    canvas.removeEventListener("mousedown", Listener);
+    window.removeEventListener("mousemove", Listener);
+    canvas.removeEventListener("mousemove", Listener);
+    window.removeEventListener("mouseup", Listener);
 
-    canvas.removeEventListener("mousedown", shapesListener);
-    window.removeEventListener("mouseup", shapesListener);
-    window.removeEventListener("mousemove", shapesListener);
-
-    canvas.removeEventListener("mousedown", clearListrer);
-    canvas.removeEventListener("mousemove", clearListrer);
-    window.removeEventListener("mouseup", clearListrer);
 };
 
 const saveReset = function () {
@@ -52,57 +46,11 @@ const saveReset = function () {
     title.value = '';
 }
 
-
-const initDraw = function (e) {
+const downDraw = function (e) {
     ctx.beginPath();
     drawable = true;
     ctx.moveTo(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop);
 };
-
-const draw = function (e) {
-    e.preventDefault();
-    ctx.lineTo(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop);
-    ctx.stroke();
-};
-
-const drawListener = function (e) {
-    switch (e.type) {
-        case "mousedown":
-            initDraw(e);
-            break;
-        case "mousemove":
-            if (drawable)
-                draw(e);
-            break;
-        case "mouseup":
-            drawable = false;
-            break;
-    }
-};
-
-const clearMove = function(e){
-    e.preventDefault();
-    let clearSize = size.value*5;
-    let X = e.clientX - canvas.offsetLeft;
-    let Y = e.clientY - canvas.offsetTop;
-    ctx.clearRect(X - (clearSize/2), Y - (clearSize/2), clearSize, clearSize);
-
-}
-
-const clearListrer = function (e) {
-    switch (e.type) {
-        case "mousedown":
-            drawable = true;
-            break;
-        case "mousemove":
-            if(drawable) 
-                clearMove(e);
-            break;
-        case "mouseup":
-            drawable = false;
-            break;
-    }
-}
 
 const downShapes = function (e) {
     ctx.beginPath();
@@ -112,13 +60,26 @@ const downShapes = function (e) {
 };
 
 
+
+const moveDraw = function (e) {
+    e.preventDefault();
+    ctx.lineTo(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop);
+    ctx.stroke();
+};
+
+const moveClear = function(e){
+    e.preventDefault();
+    ctx.lineTo(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop);
+    ctx.stroke();
+}
+
 const moveShapes = function (e) {
     e.preventDefault();
-    if (pos.X !== 0 && pos.Y !== 0) {
-        if (shape === "rectangle") {
-            ctx.clearRect(rec.X, rec.Y, pos.X - rec.X, pos.Y - rec.Y);
-        }
-    }
+    // if (pos.X !== 0 && pos.Y !== 0) {
+    //     if (shape === "rectangle") {
+    //         ctx.clearRect(rec.X, rec.Y, pos.X - rec.X, pos.Y - rec.Y);
+    //     }
+    // }
     pos = {
         X: e.clientX - canvas.offsetLeft,
         Y: e.clientY - canvas.offsetTop
@@ -126,10 +87,12 @@ const moveShapes = function (e) {
     if (shape === "rectangle") {
         ctx.fillRect(rec.X, rec.Y, pos.X - rec.X, pos.Y - rec.Y);
     } else {
+        ctx.lineWidth = 1;
         ctx.arc((pos.X - rec.X), (pos.Y - rec.Y), (pos.X - rec.X) / 2, 0, Math.PI * 2);
         ctx.stroke();
     }
 }
+
 
 const upShapes = function () {
     ctx.beginPath();
@@ -138,19 +101,48 @@ const upShapes = function () {
 }
 
 
-const shapesListener = function (e) {
+const Listener = function(e){
     switch (e.type) {
         case "mousedown":
-            downShapes(e);
+
+            drawable = true; 
+            if(tool == "pencil"){
+                downDraw(e);
+            } else if(tool == "eraser"){
+                ctx.globalCompositeOperation = "destination-out";
+                downDraw(e);
+            } else if(tool == "shapes"){
+                downShapes(e);
+            }
             break;
+
         case "mousemove":
-            if (drawable)
-                moveShapes(e);
+
+            if(drawable){
+                if(tool == "pencil"){
+                    moveDraw(e);
+                } else if(tool == "eraser"){
+                    moveClear(e);
+                } else if(tool == "shapes"){
+                    // ctx.globalCompositeOperation = "source-out";
+                    moveShapes(e);                    
+
+                }
+            }
             break;
+
         case "mouseup":
-            upShapes();
-            drawable = false
-            break;
+            drawable = false;
+            if(tool == "pencil"){
+
+            } else if(tool == "eraser"){
+                ctx.globalCompositeOperation="source-over";
+            } else if(tool == "shapes"){
+                // ctx.globalCompositeOperation = "source-out";
+                // ctx.globalCompositeOperation = "source-out";
+                upShapes();
+            }
+
     }
 };
 
@@ -160,34 +152,28 @@ tools.addEventListener("click", function ({ target }) {
 
     switch (target.parentNode.classList[0]) {
         case "pencil":
-            window.addEventListener("mousemove", drawListener);
-            canvas.addEventListener("mousedown", drawListener);
-            window.addEventListener("mouseup", drawListener);
+            tool = "pencil";
             break;
         case "eraser":
-            canvas.addEventListener("mousedown", clearListrer);
-            canvas.addEventListener("mousemove", clearListrer);
-            window.addEventListener("mouseup", clearListrer);
-
+            tool = "eraser";
             break;
         case "rectangle":
+            tool = "shapes";
             shape = "rectangle";
-
-            canvas.addEventListener("mousedown", shapesListener);
-            window.addEventListener("mouseup", shapesListener);
-            window.addEventListener("mousemove", shapesListener);
             break;
         case "circle":
+            tool = "shapes";
             shape = "circle";
-
-            canvas.addEventListener("mousedown", shapesListener);
-            window.addEventListener("mouseup", shapesListener);
-            window.addEventListener("mousemove", shapesListener);
             break;
     };
+
+    canvas.addEventListener("mousedown", Listener);
+    window.addEventListener("mousemove", Listener);
+    canvas.addEventListener("mousemove", Listener);
+    window.addEventListener("mouseup", Listener);
 });
 
-window.addEventListener("blur", () => drawable = false);
+
 
 colorBtn.addEventListener("change", function () {
     ctx.fillStyle = colorBtn.value;
@@ -239,3 +225,5 @@ resetBtn.addEventListener("click", function () {
     const context = canvas.getContext('2d');
     context.clearRect(0, 0, canvas.width, canvas.height);
 });
+
+window.addEventListener("blur", () => drawable = false);
