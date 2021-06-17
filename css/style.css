@@ -12,14 +12,21 @@ body{background: rgb(65, 65, 65);}
 .tools>div{width: 70px; height: 70px; border-radius: 15px; justify-content: center; align-items: center;}
 .tools>div>img{width: 70px; height: 70px; padding: 5px; object-fit: cover; cursor: pointer; border-radius: 15px;}
 
+.tool{width: 200px;}
 .tool .sub-tool{margin-top: 40px;}
 .tool .size{margin-left: 10px;}
 .tool .size input{width: 70px; height: 35px; margin: 5px; font-size: 18px;}
 
-.tool .color p{margin: 10px;}
+.tool  p{margin: 10px;}
 .tool .color_btn{width: 150px; height: 30px; margin-left: 20px; border: none; outline: none;}
 
 .sub-tool .size input{width: 120px; height: 40px; margin-left: 20px;}
+
+.bor{justify-content: center;}
+.bor img{width: 65px; height: 65px; padding: 5px;}
+.bor .fill,
+.bor .border{width: 65px; height: 65px; background: #fff; margin: 0 5px; justify-content: center; align-items: center; border-radius: 10px;}
+.bor .fill{background: #eee;}
 
 .save{width: 100%; margin: 0 auto; height: 100vh; background: #fff; position: fixed; left: 0; right: 0; top: 0; bottom: 0; flex-direction: column;}
 

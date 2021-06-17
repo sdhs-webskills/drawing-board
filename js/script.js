@@ -3,6 +3,7 @@ const ctx = canvas.getContext("2d");
 
 const tools = document.querySelector(".tools");
 const size = document.querySelector(".size input");
+const bor = document.querySelector(".bor");
 const colorBtn = document.querySelector(".sub-tool .color_btn");
 
 const savePopup = document.querySelector(".save");
@@ -19,12 +20,15 @@ let drawable = false;
 let tool = "";
 let shape = "";
 let color = "";
+let fill = true;
 
 let rec = { X: 0, Y: 0 }
 let pos = { X: 0, Y: 0 }
 
 const reset = function (e) {
     [...tools.children].forEach((data) => data.style.background = "#fff");
+    [...bor.children].forEach((data) => data.style.background = "#fff");
+    bor.children[0].style.background ="#eee";
     ctx.fillStyle = "#000000";
     ctx.strokeStyle = "#000000";
     colorBtn.value = "#000000"
@@ -33,6 +37,7 @@ const reset = function (e) {
     color = "";
     shape = "";
     tool = "";
+    fill = true;
 
     canvas.removeEventListener("mousedown", Listener);
     window.removeEventListener("mousemove", Listener);
@@ -57,6 +62,9 @@ const downShapes = function (e) {
     drawable = true;
     rec.X = e.clientX - canvas.offsetLeft
     rec.Y = e.clientY - canvas.offsetTop
+    // moveTo(rec.X, rec.Y);
+    // console.log(rec.X, rec.Y);
+    // console.log(pos.X, pos.Y);
 };
 
 
@@ -75,31 +83,51 @@ const moveClear = function(e){
 
 const moveShapes = function (e) {
     e.preventDefault();
-    // if (pos.X !== 0 && pos.Y !== 0) {
-    //     if (shape === "rectangle") {
-    //         ctx.clearRect(rec.X, rec.Y, pos.X - rec.X, pos.Y - rec.Y);
-    //     }
-    // }
+    if (pos.X !== 0 && pos.Y !== 0) {
+        if (shape === "rectangle") {
+            ctx.clearRect(rec.X, rec.Y, pos.X - rec.X, pos.Y - rec.Y);
+            // if(fill){
+            // }else{
+            //     ctx.clearRect(rec.X-10, rec.Y+10, pos.X - rec.X+20, pos.Y - rec.Y+20);
+            // }
+        }
+    }
     pos = {
         X: e.clientX - canvas.offsetLeft,
         Y: e.clientY - canvas.offsetTop
     }
     if (shape === "rectangle") {
-        ctx.fillRect(rec.X, rec.Y, pos.X - rec.X, pos.Y - rec.Y);
+        if(fill){
+            ctx.fillRect(rec.X, rec.Y, pos.X - rec.X, pos.Y - rec.Y);
+        }else{
+            ctx.strokeRect(rec.X, rec.Y, pos.X - rec.X, pos.Y - rec.Y);
+        }
     } else {
-        ctx.lineWidth = 1;
-        ctx.arc((pos.X - rec.X), (pos.Y - rec.Y), (pos.X - rec.X) / 2, 0, Math.PI * 2);
-        ctx.stroke();
     }
+    
 }
 
 
-const upShapes = function () {
+// const upShapes = function (e) {
+//     ctx.beginPath();
+//     pos = { X: 0, Y: 0 }
+//     rec = { X: 0, Y: 0 }
+// }
+
+const upShapes = function (e) {
+    if(shape === "rectangle"){
+    } else {
+        ctx.arc(rec.X+(pos.X - rec.X)/2,  rec.Y+(pos.Y - rec.Y)/2, (pos.X - rec.X) / 2, 0, Math.PI * 2, true);
+        if(fill){
+            ctx.fill();
+        } else {
+            ctx.stroke();
+        }
+    }
     ctx.beginPath();
     pos = { X: 0, Y: 0 }
     rec = { X: 0, Y: 0 }
 }
-
 
 const Listener = function(e){
     switch (e.type) {
@@ -140,7 +168,7 @@ const Listener = function(e){
             } else if(tool == "shapes"){
                 // ctx.globalCompositeOperation = "source-out";
                 // ctx.globalCompositeOperation = "source-out";
-                upShapes();
+                upShapes(e);
             }
 
     }
@@ -171,6 +199,21 @@ tools.addEventListener("click", function ({ target }) {
     window.addEventListener("mousemove", Listener);
     canvas.addEventListener("mousemove", Listener);
     window.addEventListener("mouseup", Listener);
+});
+
+bor.addEventListener("click", function ({ target }) {
+
+    [...bor.children].forEach((data) => data.style.background = "#fff");
+    switch (target.parentNode.classList[0]) {
+        case "fill":
+            fill = true;
+            target.parentNode.style.background = "#eee";
+            break;
+        case "border":
+            fill = false;
+            target.parentNode.style.background = "#eee";
+            break;
+    };
 });
 
 
