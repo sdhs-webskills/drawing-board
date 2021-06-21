@@ -16,10 +16,12 @@ const xx = document.querySelector(".x");
 const yy = document.querySelector(".y");
 const resetBtn = document.querySelector(".resetBtn");
 
+const container = document.querySelector(".container");
+
 let drawable = false;
 let tool = "";
 let shape = "";
-let color = "";
+let color = "#000";
 let fill = true;
 
 let rec = { X: 0, Y: 0 }
@@ -34,7 +36,7 @@ const reset = function (e) {
     colorBtn.value = "#000000"
     size.value = 10;
     ctx.lineWidth = 10;
-    color = "";
+    color = "#000";
     shape = "";
     tool = "";
     fill = true;
@@ -60,11 +62,6 @@ const downDraw = function (e) {
 const downShapes = function (e) {
     ctx.beginPath();
     drawable = true;
-    rec.X = e.clientX - canvas.offsetLeft
-    rec.Y = e.clientY - canvas.offsetTop
-    // moveTo(rec.X, rec.Y);
-    // console.log(rec.X, rec.Y);
-    // console.log(pos.X, pos.Y);
 };
 
 
@@ -83,47 +80,63 @@ const moveClear = function(e){
 
 const moveShapes = function (e) {
     e.preventDefault();
-    if (pos.X !== 0 && pos.Y !== 0) {
-        if (shape === "rectangle") {
-            ctx.clearRect(rec.X, rec.Y, pos.X - rec.X, pos.Y - rec.Y);
-            // if(fill){
-            // }else{
-            //     ctx.clearRect(rec.X-10, rec.Y+10, pos.X - rec.X+20, pos.Y - rec.Y+20);
-            // }
-        }
-    }
+    
+    [...container.children].filter((data) => {
+        if(data.classList.contains("div")) data.remove();
+    })
     pos = {
         X: e.clientX - canvas.offsetLeft,
         Y: e.clientY - canvas.offsetTop
     }
-    if (shape === "rectangle") {
-        if(fill){
-            ctx.fillRect(rec.X, rec.Y, pos.X - rec.X, pos.Y - rec.Y);
-        }else{
-            ctx.strokeRect(rec.X, rec.Y, pos.X - rec.X, pos.Y - rec.Y);
-        }
-    } else {
-    }
+    if (rec.X !== 0 && rec.Y !== 0 && pos.X !== 0 && pos.Y !== 0) {
+        if (shape === "rectangle") {
+            let div = document.createElement("div");
+            div.style.border = `3px dotted ${color}`;
+            div.classList.add("div");
+            container.append(div);
+            if (pos.X - rec.X < 0) {
+                div.style.left = (rec.X + canvas.offsetLeft) - (pos.X - rec.X) * -1 + 1 + "px";
+                div.style.width = (pos.X - rec.X) * -1 + "px";
+            } else {
+                div.style.left = rec.X + canvas.offsetLeft + 1 + "px";
+                div.style.width = pos.X - rec.X + "px";
+            }
+
+            if (pos.Y - rec.Y < 0) {
+                div.style.top = (rec.Y + canvas.offsetTop) - (pos.Y - rec.Y) * -1 + 1 + "px";
+                div.style.height = (pos.Y - rec.Y) * -1 + "px";
+            } else {
+                div.style.top = rec.Y + canvas.offsetTop + 1 + "px";
+                div.style.height = pos.Y - rec.Y + "px";
+            }
     
+        } else {
+        }
+    }
 }
 
 
-// const upShapes = function (e) {
-//     ctx.beginPath();
-//     pos = { X: 0, Y: 0 }
-//     rec = { X: 0, Y: 0 }
-// }
-
 const upShapes = function (e) {
-    if(shape === "rectangle"){
-    } else {
-        ctx.arc(rec.X+(pos.X - rec.X)/2,  rec.Y+(pos.Y - rec.Y)/2, (pos.X - rec.X) / 2, 0, Math.PI * 2, true);
-        if(fill){
-            ctx.fill();
+    [...container.children].filter((data) => {
+        if(data.classList.contains("div")) data.remove();
+    })
+    if(rec.X !== 0 && rec.Y !== 0 && pos.X !== 0 && pos.Y !== 0){
+        if(shape === "rectangle"){
+            if(fill){
+                ctx.fillRect(rec.X, rec.Y, pos.X - rec.X, pos.Y - rec.Y);
+            }else{
+                ctx.strokeRect(rec.X, rec.Y, pos.X - rec.X, pos.Y - rec.Y);
+            }
         } else {
-            ctx.stroke();
+            ctx.arc(rec.X+(pos.X - rec.X)/2,  rec.Y+(pos.Y - rec.Y)/2, (pos.X - rec.X) / 2, 0, Math.PI * 2, true);
+            if(fill){
+                ctx.fill();
+            } else {
+                ctx.stroke();
+            }
         }
     }
+
     ctx.beginPath();
     pos = { X: 0, Y: 0 }
     rec = { X: 0, Y: 0 }
@@ -132,7 +145,8 @@ const upShapes = function (e) {
 const Listener = function(e){
     switch (e.type) {
         case "mousedown":
-
+            rec.X = e.clientX - canvas.offsetLeft;
+            rec.Y = e.clientY - canvas.offsetTop;
             drawable = true; 
             if(tool == "pencil"){
                 downDraw(e);
@@ -152,7 +166,6 @@ const Listener = function(e){
                 } else if(tool == "eraser"){
                     moveClear(e);
                 } else if(tool == "shapes"){
-                    // ctx.globalCompositeOperation = "source-out";
                     moveShapes(e);                    
 
                 }
@@ -160,14 +173,14 @@ const Listener = function(e){
             break;
 
         case "mouseup":
+            console.log(pos.X - rec.X, pos.Y - rec.Y);
+            console.log(rec.X, rec.Y);
             drawable = false;
             if(tool == "pencil"){
 
             } else if(tool == "eraser"){
                 ctx.globalCompositeOperation="source-over";
             } else if(tool == "shapes"){
-                // ctx.globalCompositeOperation = "source-out";
-                // ctx.globalCompositeOperation = "source-out";
                 upShapes(e);
             }
 
@@ -202,7 +215,7 @@ tools.addEventListener("click", function ({ target }) {
 });
 
 bor.addEventListener("click", function ({ target }) {
-
+    document.querySelector(".tools .rectangle>img").click();
     [...bor.children].forEach((data) => data.style.background = "#fff");
     switch (target.parentNode.classList[0]) {
         case "fill":
@@ -215,8 +228,6 @@ bor.addEventListener("click", function ({ target }) {
             break;
     };
 });
-
-
 
 colorBtn.addEventListener("change", function () {
     ctx.fillStyle = colorBtn.value;
@@ -254,8 +265,6 @@ closeBtn.addEventListener("click", function () {
     savePopup.classList.toggle("none");
     saveReset();
 })
-
-
 
 canvas.addEventListener("mousemove", function (e) {
     let x = e.clientX - canvas.offsetLeft;
