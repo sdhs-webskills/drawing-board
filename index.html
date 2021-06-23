@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>Documnet</title>
+    <link rel="stylesheet" href="css/index.css">
+    <script src="js/index.js" defer></script>
+</head>
+<body>
+    <div id="wrap">
+        <div id="canvas-box">
+            <canvas id="canvas"></canvas>
+        </div>
+        <div id="tool-box">
+            <button id="pen" class="tool">✏️</button>
+            <button id="eraser" class="tool"><img src="https://www.free-emoticons.com/files/objects-emoticons/12150.png" alt="" class="tool"></button>
+            <button id="color" class="tool">색 지정</button>
+            <button id="shapes" class="tool">도형</button>
+            <select name="" id="fill-mode" class="tool">
+                <option value="fill" selected="true">채우기</option>
+                <option value="border">테두리</option>
+            </select>
+            <button id="save" class="tool">저장</button>
+        </div>
+        <div>
+            <div id="button-box">
+                <button id="add-layer">레이어 추가</button>
+                <button id="delete-laeyr">레이어 삭제</button>
+            </div>
+            <div id="layer-box">
+    
+            </div>
+        </div>
+    </div>
+    <input type="color" id="color-box">
+</body>
+</html>
