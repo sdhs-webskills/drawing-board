@@ -355,14 +355,13 @@ $layerBox.addEventListener("dragend", ({ target }) => {
 });
 
 const $colorBox = document.querySelector("#color-box");
-$colorBox.value = localStorage.getItem("color") ?? "rgb(0, 0, 0)";
+$colorBox.value = localStorage.getItem("color") ?? "#333333";
 
 const $toolBox = document.querySelector("#tool-box");
 $toolBox.addEventListener("click", ({ target }) => {
     if(!target.classList.contains("tool")) return;
     if(target.tagName.toLowerCase() === "img") target = target.parentNode;
 
-    isShape = false;
     isEraser = false;
 
     if(target.id === "shapes") return isShape = true;
@@ -370,6 +369,7 @@ $toolBox.addEventListener("click", ({ target }) => {
     if(target.id === "color") return $colorBox.click();
 
     if(target.id === "pen") {
+        isShape = false;
         canvasRender();
 
         return isEraser = false;
