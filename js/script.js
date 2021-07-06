@@ -398,6 +398,6 @@ resetBtn.addEventListener("click", function () {
     const context = canvas.getContext('2d');
 
     context.clearRect(0, 0, canvas.width, canvas.height);
-});
+}); 
 
 window.addEventListener("blur", () => drawable = false);
