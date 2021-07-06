@@ -103,20 +103,6 @@ const outRect = function(){
     }
 }
 
-const outCirc = function(){
-    if(move.X < 0){
-        move.X = 0;
-    }
-    if(move.X > canvas.width){
-        move.X = canvas.width;
-    }
-    // if(start.Y + (start.X - move.X) < canvas.height){
-    //     move.Y = canvas.height;
-    // }
-    // if(move.X > canvas.height){
-    //     move.Y = canvas.height;
-    // }
-}
 
 // previewShape
 const moveShapes = function (e) {
@@ -169,22 +155,26 @@ const moveShapes = function (e) {
 
             container.append(div);
 
-            outCirc();
-
-            if (move.X - start.X < 0) {
-                div.style.top = (start.Y + canvas.offsetTop) - (move.X - start.X) * -1 + 1 + "px";
-                div.style.left = (start.X + canvas.offsetLeft) - (move.X - start.X) * -1 + 1 + "px";
-                div.style.width = (move.X - start.X) * -1 + "px";
-                div.style.height = (move.X - start.X) * -1 + "px";
+            
+            const width = move.X - start.X;
+            const height = width;
+            const top = start.Y + canvas.offsetTop;
+            const left = start.X + canvas.offsetLeft;
+            
+            if (move.X - start.X > 0) {
+                div.style.top = top - width + 1 + "px";
+                div.style.left = left + 1 + "px";
+                div.style.width = width + "px";
+                div.style.height = height + "px";
             } else {
-                div.style.top = (start.Y + canvas.offsetTop) - (move.X - start.X) + 1 + "px";
-                div.style.left = start.X + canvas.offsetLeft + 1 + "px";
-                div.style.width = move.X - start.X + "px";
-                div.style.height = move.X - start.X + "px";
+                div.style.top = top - width * -1 + 1 + "px";
+                div.style.left = left - width * -1 + 1 + "px";
+                div.style.width = width * -1 + "px";
+                div.style.height = height * -1 + "px";
             }
 
             if (move.Y - start.Y > 0) {
-                div.style.top = start.Y + canvas.offsetTop + 1 + "px";
+                div.style.top = top + 1 + "px";
             }
 
             const diam = move.X - start.X;
@@ -194,7 +184,7 @@ const moveShapes = function (e) {
 };
 
 
-const upShapes = function (e) {
+const upShapes = function () {
     [...container.children].filter((data) => {
         if (data.classList.contains("rect") || data.classList.contains("circ")) data.remove();
     });
@@ -209,12 +199,29 @@ const upShapes = function (e) {
                 ctx.strokeRect(start.X, start.Y, width, height);
             }
         } else {
-            // const x = start.X + width / 2;
-            // const y = start.Y + width / 2;
-            const x = width > 0 ? start.X + width / 2 : start.X + width / 2 ;
-            const y = height > 0 ? start.Y + width / 2 : start.Y + width / 2;
+            const top = start.Y;
+            const left = start.X;
+
+            let x = 0;
+            let y = 0;
+            
+            if (move.X - start.X > 0) {
+                x = left + (width/2);
+                y = top - width / 2;
+            } else {
+                x = left + (width/2);
+                y = top + (width / 2);
+            }
+            
+            if (move.Y - start.Y > 0) {
+                y = top + width / 2;
+            }
+            
+            if(move.X - start.X < 0 && move.Y - start.Y > 0){
+                y = top - (width / 2);
+            }
+
             const radius = width / 2 < 0 ? (width / 2)*-1 : width / 2; 
-            console.log(width);
             
             ctx.arc(x, y, radius, 0, Math.PI * 2, true);
 
@@ -320,22 +327,23 @@ tools.addEventListener("click", function ({ target }) {
 });
 
 bor.addEventListener("click", function ({ target }) {
-    document.querySelector(".tools .rectangle>img").click();
+    if(tool === "shapes"){
+        [...bor.children].forEach(({ style }) => style.background = "#fff");
+    
+        const parent = target.parentNode;
+    
+        switch (parent.classList[0]) {
+            case "fill":
+                fill = true;
+                parent.style.background = "#eee";
+                break;
+            case "border":
+                fill = false;
+                parent.style.background = "#eee";
+                break;
+        };
+    }
 
-    [...bor.children].forEach(({ style }) => style.background = "#fff");
-
-    const parent = target.parentNode;
-
-    switch (parent.classList[0]) {
-        case "fill":
-            fill = true;
-            parent.style.background = "#eee";
-            break;
-        case "border":
-            fill = false;
-            parent.style.background = "#eee";
-            break;
-    };
 });
 
 colorBtn.addEventListener("change", function () {
