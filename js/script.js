@@ -47,6 +47,10 @@ const reset = function () {
     shapeX.value = "shapeX: ";
     shapeY.value = "shapeY: ";
     diameter.value = "원의 지름: ";
+    start.X = 0;
+    start.Y = 0;
+    move.X = 0;
+    move.Y = 0;
 
     canvas.removeEventListener("mousedown", Listener);
     canvas.removeEventListener("mousemove", Listener);
@@ -234,91 +238,95 @@ const upShapes = function () {
     }
 
     ctx.beginPath();
-    start = { X: 0, Y: 0 };
+    start.X = 0;
+    start.Y = 0;
 };
 
 const Listener = function (e) {
-    switch (e.type) {
-        case "mousedown":
-            start.X = e.clientX - canvas.offsetLeft;
-            start.Y = e.clientY - canvas.offsetTop;
+    if(e.type === "mousedown"){
+        start.X = e.clientX - canvas.offsetLeft;
+        start.Y = e.clientY - canvas.offsetTop;
+    
+        drawable = true;
+    
+        if (tool === "pencil") {
+            downDraw(e);
+            return false;
+        };
+        if (tool === "eraser") {
+            ctx.globalCompositeOperation = "destination-out";
+            downDraw(e);
+            return false;
+        };
+        if (tool === "shapes") {
+            downShapes(e);
+            return false;
+        };
 
-            drawable = true;
+        return false;
+    };
 
+    if(e.type === "mousemove"){
+        move.X = e.clientX - canvas.offsetLeft
+        move.Y = e.clientY - canvas.offsetTop
+
+        if (drawable) {
             if (tool === "pencil") {
-                downDraw(e);
+                moveDraw(e);
                 return false;
             }
             if (tool === "eraser") {
-                ctx.globalCompositeOperation = "destination-out";
-                downDraw(e);
+                moveClear(e);
                 return false;
             }
             if (tool === "shapes") {
-                downShapes(e);
+                moveShapes(e);
                 return false;
             }
-            break;
+        }
 
-        case "mousemove":
-            move.X = e.clientX - canvas.offsetLeft
-            move.Y = e.clientY - canvas.offsetTop
+        return false;
+    };
 
-            if (drawable) {
-                if (tool === "pencil") {
-                    moveDraw(e);
-                    return false;
-                }
-                if (tool === "eraser") {
-                    moveClear(e);
-                    return false;
-                }
-                if (tool === "shapes") {
-                    moveShapes(e);
-                    return false;
-                }
-            }
-            break;
+    if(e.type === "mouseup"){
+        drawable = false;
 
-        case "mouseup":
-            drawable = false;
+        if (tool === "pencil") {
+            return false;
+        }
+        if (tool === "eraser") {
+            ctx.globalCompositeOperation = "source-over";
+            return false;
+        }
+        if (tool === "shapes") {
+            upShapes(e);
+            return false;
+        }
 
-            if (tool === "pencil") {
-                return false;
-            }
-            if (tool === "eraser") {
-                ctx.globalCompositeOperation = "source-over";
-                return false;
-            }
-            if (tool === "shapes") {
-                upShapes(e);
-                return false;
-            }
-
-    }
+        return false;
+    };
 };
 
 tools.addEventListener("click", function ({ target }) {
     reset();
 
     const parent = target.parentNode;
-
     parent.style.background = "#eee";
 
-    switch (parent.classList[0]) {
-        case "pencil": tool = "pencil"; break;
-        case "eraser": tool = "eraser"; break;
-        case "rectangle":
-            tool = "shapes";
-            shape = "rectangle";
-            bor.children[0].style.background = "#eee";
-            break;
-        case "circle":
-            tool = "shapes";
-            shape = "circle";
-            bor.children[0].style.background = "#eee";
-            break;
+    if(parent.classList[0] === "pencil") tool = "pencil"; 
+    if(parent.classList[0] === "eraser") tool = "eraser"; 
+    if(parent.classList[0] === "rectangle"){
+        tool = "shapes";
+        shape = "rectangle";
+        bor.children[0].style.background = "#eee";
     };
+
+    if(parent.classList[0] === "circle"){
+        tool = "shapes";
+        shape = "circle";
+        bor.children[0].style.background = "#eee";
+    };
+
 
     canvas.addEventListener("mousedown", Listener);
     canvas.addEventListener("mousemove", Listener);
@@ -342,9 +350,15 @@ bor.addEventListener("click", function ({ target }) {
                 parent.style.background = "#eee";
                 break;
         };
-    }
+    };
 
 });
+
+
+
+
+
+
 
 colorBtn.addEventListener("change", function () {
     color = colorBtn.value;
