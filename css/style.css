@@ -1,0 +1,48 @@
+*{margin: 0; padding: 0; box-sizing: border-box;}
+a{text-decoration: none; color: inherit;}
+ul, li{list-style: none;}
+body{background: rgb(65, 65, 65); overflow: hidden;}
+.flex{display: flex;}
+.grid{display: grid;}
+.none{display: none;}
+
+.container{width: 100%; height: 100vh; align-items: center; position: relative; z-index: 10;}
+.tool{width: 200px; height: 850px; background: #fff !important; margin-right: 160px; border: 1px solid #000; border-top-right-radius: 50px; border-bottom-right-radius: 50px;}
+.tools{width: 120px; grid-template-columns: repeat(2, 1fr); margin: 20px; gap: 10px;}
+.tools>div{width: 70px; height: 70px; border-radius: 15px; justify-content: center; align-items: center;}
+.tools>div>img{width: 70px; height: 70px; padding: 5px; object-fit: cover; cursor: pointer; border-radius: 15px;}
+
+.tool{width: 200px;}
+.tool .sub-tool{margin-top: 40px;}
+.tool .size{margin-left: 10px;}
+.tool .size input{width: 70px; height: 35px; margin: 5px; font-size: 18px;}
+
+.tool  p{margin: 10px;}
+.tool .color_btn{width: 150px; height: 30px; margin-left: 20px; border: none; outline: none;}
+
+.sub-tool .size input{width: 120px; height: 40px; margin-left: 20px;}
+
+.bor{justify-content: center;}
+.bor img{width: 65px; height: 65px; padding: 5px;}
+.bor .fill,
+.bor .border{width: 65px; height: 65px; background: #fff; margin: 0 5px; justify-content: center; align-items: center; border-radius: 10px;}
+/* .bor .fill{background: #eee;} */
+
+.save{width: 100%; margin: 0 auto; height: 100vh; background: #fff; position: fixed; left: 0; right: 0; top: 0; bottom: 0; flex-direction: column; z-index: 100;}
+
+.save .photo-box{width: 80%; height: 800px; background: rgb(245, 245, 245); margin: 40px auto; justify-content: center; align-items: center; border-radius: 20px;}
+.save .photo-box>img{width: 80%; height: 85%; object-fit: cover; border: 1px solid #000;}
+
+.save .btns{width: 90%; height: 35px; justify-content: flex-end;}
+.save .btns>input{width: 70%; margin-right: 70px;}
+.save .btns>button{width: 100px; margin: 0 10px; border: none; border-radius: 5px;}
+
+.shapeX, .shapeY, .diam{width: 150px; margin: 5px 15px; font-size: 20px; border: none;}
+
+.save .btns>button:hover{background: rgb(59, 59, 59); color: #fff; cursor: pointer; transition: .3s;}
+.resetBtn{display: block; width: 130px; height: 40px; margin: 40px auto; background: rgb(250, 250, 250); border: 1px solid #000; cursor: pointer;}
+
+.canvas{border: 1px solid #000; background: #fff;}
+.container .rect{position: absolute; z-index: 11;}
+.container .circ{position: absolute; z-index: 11; border-radius: 100%;}
+

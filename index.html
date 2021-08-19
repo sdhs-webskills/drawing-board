@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+    <div class="container flex">
+        <div class="tool">
+            <div class="tools grid">
+                <div class="pencil flex"><img src="./img/Pencil.png" alt=""></div>
+                <div class="eraser flex"><img src="./img/Eraser.png" alt=""></div>
+                <div class="rectangle flex"><img src="./img/Rectangle.png" alt=""></div>
+                <div class="circle flex"><img src="./img/Circle.png" alt=""></div>
+            </div>
+            <div class="sub-tool">
+                <div class="size">
+                    <p>굵기</p>
+                    <input type="range" value="7" min="5" max="30">
+                </div>
+                <p>채우기</p>
+                <div class="bor flex">
+                    <div class="fill flex">
+                        <img src="./img/fill_rect.png" alt="채워서 그리기">
+                    </div>
+                    <div class="border flex">
+                        <img src="./img/boder_rect.png" alt="테투리만 그리기">
+                    </div>
+                </div>
+                <div class="color">
+                    <p>색상</p>
+                    <input type="color" class="color_btn">
+                </div>
+                <input type="text" class="shapeX" value="shapeX: " readonly>
+                <input type="text" class="shapeY" value="shapeY: " readonly>
+                <input type="text" class="diam" value="원의 지름: " readonly>
+                <br>
+                <button class="resetBtn">reset</button>
+                <br>
+            </div>
+        </div>
+        <canvas class="canvas" width="1450" height="750"></canvas>
+
+    </div>
+    <section class="save flex none">
+        <div class="photo-box flex">
+
+        </div>
+        <div class="btns flex">
+            <input type="text" class="title">
+            <button id="download">저장</button>
+            <button id="close">취소</button>
+        </div>
+    </section>
+</body>
+<script src="./js/script.js"></script>
+</html>
