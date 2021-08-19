@@ -19,14 +19,19 @@ const resetBtn = document.querySelector(".resetBtn");
 
 const container = document.querySelector(".container");
 
-let drawable = false;
-let tool = "";
-let shape = "";
-let color = "#000";
-let fill = true;
+const canvasEvent =  {
+    drawable: false,
+    tool: "",
+};
+const shapeEvent = {
+    shape: "",
+    color: "#000",
+    fill: true,
+    perfect: false,
+};
 
-let start = { X: 0, Y: 0 };
-let move = { X: 0, Y: 0 };
+const start = { X: 0, Y: 0 };
+const move = { X: 0, Y: 0 };
 
 const reset = function () {
     [...tools.children].forEach((data) => data.style.background = "#fff");
@@ -40,10 +45,10 @@ const reset = function () {
 
     size.value = 10;
 
-    color = "#000";
-    shape = "";
-    tool = "";
-    fill = true;
+    shapeEvent.color = "#000";
+    shapeEvent.shape = "";
+    shapeEvent.fill = true;
+    canvasEvent.tool = "";
     shapeX.value = "shapeX: ";
     shapeY.value = "shapeY: ";
     diameter.value = "원의 지름: ";
@@ -51,13 +56,6 @@ const reset = function () {
     start.Y = 0;
     move.X = 0;
     move.Y = 0;
-
-    canvas.removeEventListener("mousedown", Listener);
-    canvas.removeEventListener("mousemove", Listener);
-
-    window.removeEventListener("mousemove", Listener);
-    window.removeEventListener("mouseup", Listener);
-
 };
 
 const saveReset = function () {
@@ -66,7 +64,7 @@ const saveReset = function () {
 };
 
 const downDraw = function () {
-    drawable = true;
+    canvasEvent.drawable = true;
 
     ctx.beginPath();
     ctx.moveTo(start.X, start.Y);
@@ -74,8 +72,7 @@ const downDraw = function () {
 
 const downShapes = () => {
     ctx.beginPath();
-
-    drawable = true;
+    canvasEvent.drawable = true;
 };
 
 const moveDraw = function (e) {
@@ -107,7 +104,6 @@ const outRect = function(){
     }
 }
 
-
 // previewShape
 const moveShapes = function (e) {
     e.preventDefault();
@@ -118,7 +114,7 @@ const moveShapes = function (e) {
     
 
     if (start.X !== 0 && start.Y !== 0 && move.X !== 0 && move.Y !== 0) {
-        if (shape === "rectangle") {
+        if (shapeEvent.shape === "rectangle") {
             const div = document.createElement("div");
 
             div.style.border = `3px dotted #000`;
@@ -128,61 +124,43 @@ const moveShapes = function (e) {
             
             outRect();
 
-            if (move.X - start.X < 0) {
-                div.style.left = (start.X + canvas.offsetLeft) - (move.X - start.X) * -1 + 1 + "px";
-                div.style.width = (move.X - start.X) * -1 + "px";
-            } else {
-                div.style.left = start.X + canvas.offsetLeft + 1 + "px";
-                div.style.width = move.X - start.X + "px";
-            }
+            const cooX = start.X + canvas.offsetLeft + 1;
+            const cooY = start.Y + canvas.offsetTop + 1;
 
-            if (move.Y - start.Y < 0) {
-                div.style.top = (start.Y + canvas.offsetTop) - (move.Y - start.Y) * -1 + 1 + "px";
-                div.style.height = (move.Y - start.Y) * -1 + "px";
-            } else {
-                div.style.top = start.Y + canvas.offsetTop + 1 + "px";
-                div.style.height = move.Y - start.Y + "px";
-            }
+            const shaWidth = move.X - start.X;
+            const shaHeight = move.Y - start.Y;
 
-            const x = move.X - start.X;
-            const y = move.Y - start.Y;
+            div.style.left = shaWidth < 0 ? cooX + shaWidth  + "px" : cooX + "px";
+            div.style.width = shaWidth < 0 ? shaWidth * -1 + "px" : shaWidth + "px";
+            div.style.top = shaHeight < 0 ? cooY + shaHeight + "px" : cooY + "px";
+            div.style.height = shaHeight < 0 ? shaHeight * -1 + "px" : shaHeight + "px";
 
-            shapeX.value = x < 0 ? `shapeX: ${x*-1}` : `shapeX: ${x}`;
-            shapeY.value = y < 0 ? `shapeY: ${y*-1}` : `shapeY: ${y}`;
+
+            shapeX.value = shaWidth < 0 ? `shapeX: ${shaWidth*-1}` : `shapeX: ${shaWidth}`;
+            shapeY.value = shaHeight < 0 ? `shapeY: ${shaHeight*-1}` : `shapeY: ${shaHeight}`;
             
 
         } else {
             const div = document.createElement("div");
 
-            div.style.border = `3px dotted ${color}`;
+            div.style.border = `3px dotted ${shapeEvent.color}`;
             div.classList.add("circ");
 
             container.append(div);
-
             
             const width = move.X - start.X;
-            const height = width;
-            const top = start.Y + canvas.offsetTop;
-            const left = start.X + canvas.offsetLeft;
-            
-            if (move.X - start.X > 0) {
-                div.style.top = top - width + 1 + "px";
-                div.style.left = left + 1 + "px";
-                div.style.width = width + "px";
-                div.style.height = height + "px";
-            } else {
-                div.style.top = top - width * -1 + 1 + "px";
-                div.style.left = left - width * -1 + 1 + "px";
-                div.style.width = width * -1 + "px";
-                div.style.height = height * -1 + "px";
-            }
+            const height = move.Y - start.Y;
+            const top = start.Y + canvas.offsetTop + 1;
+            const left = start.X + canvas.offsetLeft + 1;
 
-            if (move.Y - start.Y > 0) {
-                div.style.top = top + 1 + "px";
-            }
+            div.style.top = width < 0 ?  top + width + "px" : top - width + "px";
+            div.style.left = width < 0 ?  left + width + "px" : left + "px";
+            div.style.width = width < 0 ?  width * -1 + "px" : width + "px";
+            div.style.height = width < 0 ?  width * -1 + "px" : width + "px";
 
-            const diam = move.X - start.X;
-            diameter.value = diam < 0 ? `원의 지름: ${diam*-1}` : `원의 지름: ${diam}`;
+            if (height > 0) div.style.top = top + 1 + "px";
+
+            diameter.value = width < 0 ? `원의 지름: ${width*-1}` : `원의 지름: ${width}`;
         };
     };
 };
@@ -196,40 +174,45 @@ const upShapes = function () {
     if (start.X !== 0 && start.Y !== 0) {
         const width = move.X - start.X;
         const height = move.Y - start.Y;
-        if (shape === "rectangle") {
-            if (fill) {
+        if (shapeEvent.shape === "rectangle") {
+
+            if (shapeEvent.fill) {
                 ctx.fillRect(start.X, start.Y, width, height);
             } else {
                 ctx.strokeRect(start.X, start.Y, width, height);
             }
+
         } else {
             const top = start.Y;
             const left = start.X;
 
             let x = 0;
             let y = 0;
-            
-            if (move.X - start.X > 0) {
-                x = left + (width/2);
-                y = top - width / 2;
-            } else {
-                x = left + (width/2);
-                y = top + (width / 2);
-            }
-            
-            if (move.Y - start.Y > 0) {
+
+            x = left + width / 2;
+
+            // +, +
+            if(width > 0 && height > 0){
                 y = top + width / 2;
             }
-            
-            if(move.X - start.X < 0 && move.Y - start.Y > 0){
-                y = top - (width / 2);
+            // -, +
+            if(width < 0 && height > 0){
+                y = top - width / 2;
+            }
+            // +, -
+            if(width > 0 && height < 0){
+                y = top - width / 2;
+            }
+            // -, -
+            if(width < 0 && height < 0){
+                y = top + width / 2;
             }
 
             const radius = width / 2 < 0 ? (width / 2)*-1 : width / 2; 
             
             ctx.arc(x, y, radius, 0, Math.PI * 2, true);
 
-            if (fill) {
+            if (shapeEvent.fill) {
                 ctx.fill();
             } else {
                 ctx.stroke();
@@ -247,18 +230,18 @@ const Listener = function (e) {
         start.X = e.clientX - canvas.offsetLeft;
         start.Y = e.clientY - canvas.offsetTop;
     
-        drawable = true;
+        canvasEvent.drawable = true;
     
-        if (tool === "pencil") {
+        if (canvasEvent.tool === "pencil") {
             downDraw(e);
             return false;
         };
-        if (tool === "eraser") {
+        if (canvasEvent.tool === "eraser") {
             ctx.globalCompositeOperation = "destination-out";
             downDraw(e);
             return false;
         };
-        if (tool === "shapes") {
+        if (canvasEvent.tool === "shapes") {
             downShapes(e);
             return false;
         };
@@ -270,16 +253,16 @@ const Listener = function (e) {
         move.X = e.clientX - canvas.offsetLeft
         move.Y = e.clientY - canvas.offsetTop
 
-        if (drawable) {
-            if (tool === "pencil") {
+        if (canvasEvent.drawable) {
+            if (canvasEvent.tool === "pencil") {
                 moveDraw(e);
                 return false;
             }
-            if (tool === "eraser") {
+            if (canvasEvent.tool === "eraser") {
                 moveClear(e);
                 return false;
             }
-            if (tool === "shapes") {
+            if (canvasEvent.tool === "shapes") {
                 moveShapes(e);
                 return false;
             }
@@ -289,16 +272,16 @@ const Listener = function (e) {
     };
 
     if(e.type === "mouseup"){
-        drawable = false;
+        canvasEvent.drawable = false;
 
-        if (tool === "pencil") {
+        if (canvasEvent.tool === "pencil") {
             return false;
         }
-        if (tool === "eraser") {
+        if (canvasEvent.tool === "eraser") {
             ctx.globalCompositeOperation = "source-over";
             return false;
         }
-        if (tool === "shapes") {
+        if (canvasEvent.tool === "shapes") {
             upShapes(e);
             return false;
         }
@@ -313,17 +296,17 @@ tools.addEventListener("click", function ({ target }) {
     const parent = target.parentNode;
     parent.style.background = "#eee";
 
-    if(parent.classList[0] === "pencil") tool = "pencil"; 
-    if(parent.classList[0] === "eraser") tool = "eraser"; 
+    if(parent.classList[0] === "pencil") canvasEvent.tool = "pencil"; 
+    if(parent.classList[0] === "eraser") canvasEvent.tool = "eraser"; 
     if(parent.classList[0] === "rectangle"){
-        tool = "shapes";
-        shape = "rectangle";
+        canvasEvent.tool = "shapes";
+        shapeEvent.shape = "rectangle";
         bor.children[0].style.background = "#eee";
     };
 
     if(parent.classList[0] === "circle"){
-        tool = "shapes";
-        shape = "circle";
+        canvasEvent.tool = "shapes";
+        shapeEvent.shape = "circle";
         bor.children[0].style.background = "#eee";
     };
 
@@ -335,18 +318,18 @@ tools.addEventListener("click", function ({ target }) {
 });
 
 bor.addEventListener("click", function ({ target }) {
-    if(tool === "shapes"){
+    if(canvasEvent.tool === "shapes"){
         [...bor.children].forEach(({ style }) => style.background = "#fff");
     
         const parent = target.parentNode;
     
         switch (parent.classList[0]) {
             case "fill":
-                fill = true;
+                shapeEvent.fill = true;
                 parent.style.background = "#eee";
                 break;
             case "border":
-                fill = false;
+                shapeEvent.fill = false;
                 parent.style.background = "#eee";
                 break;
         };
@@ -355,16 +338,11 @@ bor.addEventListener("click", function ({ target }) {
 });
 
 
-
-
-
-
-
 colorBtn.addEventListener("change", function () {
-    color = colorBtn.value;
+    shapeEvent.color = colorBtn.value;
 
-    ctx.fillStyle = color;
-    ctx.strokeStyle = color;
+    ctx.fillStyle = shapeEvent.color;
+    ctx.strokeStyle = shapeEvent.color;
 });
 
 size.addEventListener("change", function () {
@@ -414,4 +392,7 @@ resetBtn.addEventListener("click", function () {
     context.clearRect(0, 0, canvas.width, canvas.height);
 }); 
 
-window.addEventListener("blur", () => drawable = false);
+window.addEventListener("keydown", ({key})=> { if(key ==="Shift") shapeEvent.perfect = true });
+window.addEventListener("keyup", ({key})=> { if(key ==="Shift") shapeEvent.perfect = false });
+
+window.addEventListener("blur", () => canvasEvent.drawable = false);
