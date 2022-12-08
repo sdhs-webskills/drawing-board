@@ -9,6 +9,25 @@
 </head>
 <body>
     <div id="root">
+        <header>
+            <label>색상<input type="color"></label>&nbsp;
+            <label>굵기<input type="number" min="1" max="100" value="16"></label>&nbsp;
+            <label>글자크기<input type="number" min="1" max="100" value="16"></label>&nbsp;
+            <label>
+                글꼴<select name="font" id="font">
+                    <option value="sens-serif">sens-serif</option>
+                </select>
+            </label>&nbsp;
+            <span>지우개</span>&nbsp;
+            <span>펜</span>&nbsp;
+            <span>사각형</span>&nbsp;
+            <span>사각형</span>&nbsp;
+            <span>원</span>&nbsp;
+            <span>삼각형</span>&nbsp;
+            <span>테두리</span>&nbsp;
+            <span>텍스트박스</span>&nbsp;
+            <span>레이어</span>&nbsp;
+        </header>
         <canvas id="canvas"></canvas>
     </div>
     <script src="./js/script.js"></script>
