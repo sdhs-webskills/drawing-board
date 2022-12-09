@@ -12,7 +12,7 @@ const color = $('.color');
 const thickness = $('.thickness');
 const fontSize = $('.fontSize');
 const fontFamily = $('.fontFamily');
-const btns = $all('span');
+const tools = $all('span');
 
 let data = {
     color: color.value,
@@ -34,11 +34,14 @@ let data = {
 
 const handleCanvasMousedown = ({offsetX, offsetY}) => {
     data.isDraw = true;
-    ctx.strokeStyle = data.color;
-    ctx.lineWidth = data.thickness;
-    ctx.lineJoin = 'round';
-    ctx.beginPath();
-    ctx.moveTo(offsetX, offsetY);
+    let tool = data.tools.filter(({isActive}) => isActive);
+    if(tool.type === 'pen') {
+        ctx.strokeStyle = data.color;
+        ctx.lineWidth = data.thickness;
+        ctx.lineJoin = 'round';
+        ctx.beginPath();
+        ctx.moveTo(offsetX, offsetY);
+    }
 }
 
 const handleCanvasMousemove = ({offsetX, offsetY}) => {
@@ -59,12 +62,31 @@ const handleColorInput = () => {
     data.color = color.value;
 }
 
+const handleThicknessInput = () => {
+    data.thickness = thickness.value;
+}
+
+const handleFontSizeInput = () => {
+    data.fontSize = fontSize.value;
+}
+
+const handleToolsClick = e => {
+    if(e.target.className === 'eraser') {
+        data.tools.forEach(tool => {
+            tool.isActive = tool.type === e.target.className ? true : false;
+        })
+    }
+}
+
 const evt = () => {
     canvas.addEventListener('mousedown', handleCanvasMousedown);
     canvas.addEventListener('mousemove', handleCanvasMousemove);
     canvas.addEventListener('mouseleave', handleCanvasMouseleave);
     canvas.addEventListener('mouseup', handleCanvasMouseUp);
     color.addEventListener('input', handleColorInput);
+    thickness.addEventListener('input', handleThicknessInput);
+    fontSize.addEventListener('input', handleFontSizeInput);
+    tools.forEach(e => e.addEventListener('click', handleToolsClick));
 }
 
 const init = () => {
