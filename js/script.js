@@ -33,11 +33,20 @@ let data = {
 }
 
 const handleCanvasMousedown = ({offsetX, offsetY}) => {
-    data.isDraw = true;
-    let tool = data.tools.filter(({isActive}) => isActive);
+    let [tool] = data.tools.filter(({isActive}) => isActive);
     if(tool.type === 'pen') {
+        data.isDraw = true;
         ctx.strokeStyle = data.color;
         ctx.lineWidth = data.thickness;
+        ctx.lineJoin = 'round';
+        ctx.beginPath();
+        ctx.moveTo(offsetX, offsetY);
+    }
+    if(tool.type === 'eraser') {
+        data.isDraw = true;
+        ctx.globalCompositeOperation = 'destination-out';
+        ctx.strokeStyle = data.color;
+        ctx.lineWidth = data.thickness * 2;
         ctx.lineJoin = 'round';
         ctx.beginPath();
         ctx.moveTo(offsetX, offsetY);
@@ -70,12 +79,20 @@ const handleFontSizeInput = () => {
     data.fontSize = fontSize.value;
 }
 
+const selectedTool = () => {
+    data.tools.forEach(tool => {
+        const selectedBtn = $(`.${tool.type}`);
+        const addClass = (e, s) => e.classList.add(s);
+        const removeClass = (e, s) => e.classList.remove(s);
+        tool.isActive ? addClass(selectedBtn, 'selected') : removeClass(selectedBtn, 'selected');
+    })
+}
+
 const handleToolsClick = e => {
-    if(e.target.className === 'eraser') {
-        data.tools.forEach(tool => {
-            tool.isActive = tool.type === e.target.className ? true : false;
-        })
-    }
+    data.tools.forEach(tool => {
+        tool.isActive = tool.type === e.target.className ? true : false;
+    })
+    selectedTool();
 }
 
 const evt = () => {
@@ -90,6 +107,7 @@ const evt = () => {
 }
 
 const init = () => {
+    selectedTool();
     evt();
 }
 

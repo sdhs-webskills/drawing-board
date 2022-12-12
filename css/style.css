@@ -6,6 +6,11 @@
     font-family: sans-serif;
 }
 
+.selected {
+    color: #fff;
+    background: #333;
+}
+
 body {
     overflow: hidden;
 }
