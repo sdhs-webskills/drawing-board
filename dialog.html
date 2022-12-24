@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        dialog{
+            position: fixed;
+            top: 0;
+            border: 0;
+            padding: 0;
+            
+        }
+        #a::backdrop{
+            background: rgba(0,0,0,0.8);
+        }
+        #b::backdrop{
+            background: red;
+        }
+
+        .contents{
+            padding: 1rem;
+        }
+    </style>
+</head>
+<body>
+    야 싸우자
+    <button id="A-btn">A open</button>
+    <button id="B-btn">B open</button>
+    <dialog id="a" >
+        <div class="contents">
+            
+            <div class="head">head</div>
+            <div class="body">body</div>
+            <div class="footer">footer</div>
+            <button>close</button>
+        </div>
+    </dialog>
+    <dialog id="b" >
+        <div class="contents">
+            
+            <div class="head">he321231ad</div>
+            <div class="body">b231231231ody</div>
+            <div class="footer">f321231231ooter</div>
+            <button>close</button>
+        </div>
+    </dialog>   
+    <script>
+        const $aBtn = document.getElementById('A-btn'); 
+        const $bBtn = document.getElementById('B-btn'); 
+        const $a = document.getElementById('a');
+        const $b = document.getElementById('b');
+
+        const status = {
+            detail:dialogAPI($a),
+            search:dialogAPI($b),
+        }
+
+        $aBtn.addEventListener('click',status.detail.open);
+        $bBtn.addEventListener('click',status.search.open);
+        $b.querySelector('button').addEventListener('click',status.search.close)
+        $a.querySelector('button').addEventListener('click',status.detail.close)
+        
+
+
+        function dialogAPI($dialog){
+            function open(){
+                $dialog.showModal();
+            }
+            function close(){
+                $dialog.close();
+            }
+            $dialog.addEventListener('click',function(event){
+                if( this ===  event.target ){
+                    close();
+                }
+            }); 
+            return {
+                open, close
+            }
+        }
+
+    </script>
+</body>
+</html>
